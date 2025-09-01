@@ -17,19 +17,24 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box m="20px">
+    <Box sx={{ m: { xs: "10px", md: "20px" } }}>
       {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", md: "center" }}
+        gap={{ xs: 2, md: 0 }}
+      >
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-
-        <Box>
+        <Box sx={{ mt: { xs: 2, md: 0 } }}>
           <Button
             sx={{
               backgroundColor: colors.blueAccent[700],
               color: colors.grey[100],
               fontSize: "14px",
               fontWeight: "bold",
-              padding: "10px 20px",
+              padding: { xs: "8px 12px", md: "10px 20px" },
             }}
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
@@ -41,17 +46,22 @@ const Dashboard = () => {
       {/* GRID & CHARTS */}
       <Box
         display="grid"
-        gridTemplateColumns="repeat(12, 1fr)"
+        gridTemplateColumns={{
+          xs: "1fr",
+          md: "repeat(12, 1fr)"
+        }}
         gridAutoRows="140px"
-        gap="20px"
+        gap={{ xs: "10px", md: "20px" }}
       >
         {/* ROW 1 */}
         <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 3" },
+            backgroundColor: colors.primary[400],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
         >
           <StatBox
             title="12,361"
@@ -66,11 +76,13 @@ const Dashboard = () => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 3" },
+            backgroundColor: colors.primary[400],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
         >
           <StatBox
             title="431,225"
@@ -85,11 +97,13 @@ const Dashboard = () => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 3" },
+            backgroundColor: colors.primary[400],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
         >
           <StatBox
             title="32,441"
@@ -104,11 +118,13 @@ const Dashboard = () => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 3" },
+            backgroundColor: colors.primary[400],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
         >
           <StatBox
             title="1,325,134"
@@ -125,9 +141,11 @@ const Dashboard = () => {
 
         {/* ROW 2 */}
         <Box
-          gridColumn="span 8"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 8" },
+            gridRow: { xs: "span 1", md: "span 2" },
+            backgroundColor: colors.primary[400]
+          }}
         >
           <Box
             mt="25px"
@@ -160,15 +178,17 @@ const Dashboard = () => {
               </IconButton>
             </Box>
           </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
+          <Box>
+            <BarChart isDashboard={true} />
           </Box>
         </Box>
         <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          overflow="auto"
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 4" },
+            gridRow: { xs: "span 1", md: "span 2" },
+            backgroundColor: colors.primary[400],
+            overflow: "auto"
+          }}
         >
           <Box
             display="flex"
@@ -217,10 +237,12 @@ const Dashboard = () => {
 
         {/* ROW 3 */}
         <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 4" },
+            gridRow: { xs: "span 1", md: "span 2" },
+            backgroundColor: colors.primary[400],
+            p: "30px"
+          }}
         >
           <Typography variant="h5" fontWeight="600">
             Campaign
@@ -243,9 +265,11 @@ const Dashboard = () => {
           </Box>
         </Box>
         <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
+          sx={{
+            gridColumn: { xs: "span 1", md: "span 4" },
+            gridRow: { xs: "span 1", md: "span 2" },
+            backgroundColor: colors.primary[400]
+          }}
         >
           <Typography
             variant="h5"
@@ -254,7 +278,7 @@ const Dashboard = () => {
           >
             Sales Quantity
           </Typography>
-          <Box height="250px" mt="-20px">
+          <Box>
             <BarChart isDashboard={true} />
           </Box>
         </Box>

@@ -38,20 +38,25 @@ const AuthPage = () => {
   return (
     <Box
       sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
         width: "100vw",
         height: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "background.default",
+        bgcolor: "#1a2236", // updated background color
+        zIndex: 2000,
       }}
     >
       <Paper
-        elevation={6}
+        elevation={8}
         sx={{
           width: 400,
           p: 4,
           borderRadius: 3,
+          bgcolor: "#232946", // updated Paper color
         }}
       >
         {/* Tabs for switching between Login & Register */}
@@ -62,6 +67,20 @@ const AuthPage = () => {
             setError("");
           }}
           centered
+          textColor="secondary"
+          indicatorColor="secondary"
+          sx={{
+            mb: 2,
+            "& .MuiTab-root": {
+              color: "#b8c1ec", // tab text color
+            },
+            "& .Mui-selected": {
+              color: "#eebbc3 !important", // selected tab color
+            },
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#eebbc3", // indicator color
+            },
+          }}
         >
           <Tab label="Login" />
           <Tab label="Register" />
@@ -76,6 +95,25 @@ const AuthPage = () => {
               margin="normal"
               value={uniqueId}
               onChange={(e) => setUniqueId(e.target.value)}
+              InputProps={{
+                style: { color: "#b8c1ec" }, // input text color
+              }}
+              InputLabelProps={{
+                style: { color: "#b8c1ec" }, // label color
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#b8c1ec",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                },
+              }}
             />
             <TextField
               label="Password"
@@ -85,10 +123,29 @@ const AuthPage = () => {
               margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              InputLabelProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#b8c1ec",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                },
+              }}
             />
 
             {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              <Typography color="#eebbc3" variant="body2" sx={{ mt: 1 }}>
                 {error}
               </Typography>
             )}
@@ -96,7 +153,16 @@ const AuthPage = () => {
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                bgcolor: "#eebbc3",
+                color: "#232946",
+                fontWeight: "bold",
+                "&:hover": {
+                  bgcolor: "#ffd6e0",
+                  color: "#232946",
+                },
+              }}
               onClick={handleLogin}
             >
               Login
@@ -111,6 +177,25 @@ const AuthPage = () => {
               margin="normal"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              InputProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              InputLabelProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#b8c1ec",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                },
+              }}
             />
             <TextField
               label="Unique ID"
@@ -119,6 +204,25 @@ const AuthPage = () => {
               margin="normal"
               value={uniqueId}
               onChange={(e) => setUniqueId(e.target.value)}
+              InputProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              InputLabelProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#b8c1ec",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                },
+              }}
             />
             <TextField
               label="Password"
@@ -128,10 +232,29 @@ const AuthPage = () => {
               margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              InputLabelProps={{
+                style: { color: "#b8c1ec" },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#b8c1ec",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#eebbc3",
+                  },
+                },
+              }}
             />
 
             {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              <Typography color="#eebbc3" variant="body2" sx={{ mt: 1 }}>
                 {error}
               </Typography>
             )}
@@ -139,7 +262,16 @@ const AuthPage = () => {
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                bgcolor: "#eebbc3",
+                color: "#232946",
+                fontWeight: "bold",
+                "&:hover": {
+                  bgcolor: "#ffd6e0",
+                  color: "#232946",
+                },
+              }}
               onClick={handleRegister}
             >
               Register
