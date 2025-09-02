@@ -8,16 +8,12 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import InsightsOutlinedIcon from "@mui/icons-material/InsightsOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import logoImage from "./madhavlogo.png";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -189,6 +185,27 @@ const Sidebar = () => {
               title="Order Management"
               to="/order-manage"
               icon={<ShoppingCartOutlinedIcon  />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Support"
+              to="/support"
+              icon={<HelpOutlineOutlinedIcon   />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Analytics"
+              to="/analytics"
+              icon={<InsightsOutlinedIcon   />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Inactivity"
+              to="/inactivity"
+              icon={<AccessTimeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

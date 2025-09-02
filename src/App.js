@@ -12,6 +12,9 @@ import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
 import Register from "./scenes/auth/Register";
+import Support from "./scenes/support/index";
+import Analytics from "./scenes/analytics/index";
+import Inactivity from "./scenes/inactivity";
 import Test from "./components/test";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
@@ -44,6 +47,9 @@ function App() {
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/inactivity" element={<Inactivity />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/req-manage" element={<ReqManage />} />
               <Route path="/order-manage" element={<OrderManage />} />

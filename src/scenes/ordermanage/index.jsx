@@ -2,10 +2,7 @@ import { useState } from "react";
 import {
   Box,
   Typography,
-  Button,
   IconButton,
-  MenuItem,
-  Select,
   useTheme,
   Tooltip,
 } from "@mui/material";
@@ -100,23 +97,7 @@ const OrderManagement = () => {
         </Box>
       ),
     },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (params) => (
-        <Select
-          value={params.row.status}
-          onChange={(e) => handleStatusChange(params.row.id, e.target.value)}
-        >
-          {["Pending", "Confirmed", "Rejected"].map((status) => (
-            <MenuItem key={status} value={status}>
-              {status}
-            </MenuItem>
-          ))}
-        </Select>
-      ),
-    },
+    { field: "status", headerName: "Status", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
