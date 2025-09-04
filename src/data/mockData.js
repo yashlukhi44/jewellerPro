@@ -4,6 +4,7 @@ export const mockDataTeam = [
   {
     id: 1,
     name: "Jon Snow",
+    description: "It is a long established fact that a reader will be distracted by the readable content",
     email: "jonsnow@gmail.com",
     age: 35,
     phone: "(665)121-5454",
@@ -12,6 +13,7 @@ export const mockDataTeam = [
   {
     id: 2,
     name: "Cersei Lannister",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     email: "cerseilannister@gmail.com",
     age: 42,
     phone: "(421)314-2288",
@@ -79,6 +81,7 @@ export const mockDataContacts = [
   {
     id: 1,
     name: "Jon Snow",
+    description: "It is a long established fact that a reader will be distracted by the readable content",
     email: "jonsnow@gmail.com",
     age: 35,
     phone: "(665)121-5454",
@@ -203,6 +206,7 @@ export const mockDataInvoices = [
   {
     id: 1,
     name: "Jon Snow",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     email: "jonsnow@gmail.com",
     cost: "21.24",
     phone: "(665)121-5454",
@@ -211,6 +215,7 @@ export const mockDataInvoices = [
   {
     id: 2,
     name: "Cersei Lannister",
+    description: "It is a long established fact that a reader will be distracted by the readable content",
     email: "cerseilannister@gmail.com",
     cost: "1.24",
     phone: "(421)314-2288",
@@ -219,6 +224,7 @@ export const mockDataInvoices = [
   {
     id: 3,
     name: "Jaime Lannister",
+    description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     email: "jaimelannister@gmail.com",
     cost: "11.24",
     phone: "(422)982-6739",
@@ -227,6 +233,7 @@ export const mockDataInvoices = [
   {
     id: 4,
     name: "Anya Stark",
+    description: "It is a long established fact that a reader will be distracted by the readable content",
     email: "anyastark@gmail.com",
     cost: "80.55",
     phone: "(921)425-6742",
@@ -235,6 +242,7 @@ export const mockDataInvoices = [
   {
     id: 5,
     name: "Daenerys Targaryen",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     email: "daenerystargaryen@gmail.com",
     cost: "1.24",
     phone: "(421)445-1189",
@@ -243,6 +251,7 @@ export const mockDataInvoices = [
   {
     id: 6,
     name: "Ever Melisandre",
+    description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     email: "evermelisandre@gmail.com",
     cost: "63.12",
     phone: "(232)545-6483",
@@ -251,6 +260,7 @@ export const mockDataInvoices = [
   {
     id: 7,
     name: "Ferrara Clifford",
+    description: "It is a long established fact that a reader will be distracted by the readable content",
     email: "ferraraclifford@gmail.com",
     cost: "52.42",
     phone: "(543)124-0123",
@@ -259,6 +269,7 @@ export const mockDataInvoices = [
   {
     id: 8,
     name: "Rossini Frances",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     email: "rossinifrances@gmail.com",
     cost: "21.24",
     phone: "(222)444-5555",

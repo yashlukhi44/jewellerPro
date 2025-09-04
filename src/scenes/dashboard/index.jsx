@@ -167,7 +167,7 @@ const Dashboard = () => {
         <Box sx={{ gridColumn: { xs: "span 12", md: "span 8" }, gridRow: "span 2" }}>
           <Paper
             elevation={3}
-            sx={{ height: "100%", backgroundColor: colors.primary[400], borderRadius: 3, p: 3 }}
+            sx={{ backgroundColor: colors.primary[400], borderRadius: 3, p: 3 }}
           >
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
               <Box>
@@ -236,7 +236,7 @@ const Dashboard = () => {
           </Paper>
         </Box>
 
-        {/* CAMPAIGN */}
+        {/* CAMPAIGN
         <Box sx={{ gridColumn: { xs: "span 12", md: "span 4" }, gridRow: "span 2" }}>
           <Paper
             elevation={3}
@@ -255,20 +255,7 @@ const Dashboard = () => {
               </Typography>
             </Box>
           </Paper>
-        </Box>
-
-        {/* SALES QUANTITY */}
-        <Box sx={{ gridColumn: { xs: "span 12", md: "span 4" }, gridRow: "span 2" }}>
-          <Paper
-            elevation={3}
-            sx={{ height: "100%", backgroundColor: colors.primary[400], borderRadius: 3, p: 3 }}
-          >
-            <Typography variant="h6" fontWeight="600" mb={2}>
-              Sales Quantity
-            </Typography>
-            <BarChart isDashboard />
-          </Paper>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

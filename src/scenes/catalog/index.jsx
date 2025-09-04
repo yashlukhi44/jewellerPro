@@ -79,7 +79,7 @@ const Catalog = () => {
       flex: 1,
       renderCell: (params) => (
         <Box>
-          <IconButton color="primary">
+          <IconButton color="white">
             <Visibility />
           </IconButton>
           <IconButton color="secondary">
@@ -96,7 +96,7 @@ const Catalog = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center" m="20px">
-  <Header title="CATALOG" subtitle="Catalog Management Screen" />
+  <Header title="CATALOG" subtitle="Catalog Management" />
 
   <Button
     variant="contained"

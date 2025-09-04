@@ -67,33 +67,10 @@ const OrderManagement = () => {
     { field: "email", headerName: "Email", flex: 1 },
     {
       field: "item",
-      headerName: "Item",
       flex: 1,
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" gap={1}>
-          {params.row.itemImage ? (
-            <img
-              src={params.row.itemImage}
-              alt={params.row.itemName}
-              style={{ width: 50, height: 50, borderRadius: 8 }}
-            />
-          ) : (
-            <Box
-              width={50}
-              height={50}
-              border="1px solid"
-              borderColor={colors.grey[400]}
-              borderRadius={1}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              fontSize="0.7rem"
-              color={colors.grey[400]}
-            >
-              No Image
-            </Box>
-          )}
-          <Typography>{params.row.itemName}</Typography>
+        <Box>
+          {params.row.itemName}
         </Box>
       ),
     },
@@ -105,7 +82,7 @@ const OrderManagement = () => {
       renderCell: (params) => (
         <Tooltip title="Copy Contact Details">
           <IconButton
-            color="primary"
+            color="white"
             onClick={() => handleCopy(params.row.phone, params.row.email)}
           >
             <ContentCopyIcon />
