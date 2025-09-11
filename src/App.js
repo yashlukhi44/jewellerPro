@@ -6,6 +6,9 @@ import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/catalog";
 import Contacts from "./scenes/contacts";
+import Material from "./scenes/material/index";
+import Category from "./scenes/category/index";
+import SubCategory from "./scenes/subCategory/index";
 import Bar from "./scenes/bar";
 import Form from "./scenes/form";
 import Line from "./scenes/line";
@@ -42,6 +45,9 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/catalog" element={<Invoices />} />
+              <Route path="/material" element={<Material />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="/sub-category" element={<SubCategory />} />
               <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />

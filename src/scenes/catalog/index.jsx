@@ -1,91 +1,234 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
-  useTheme,
   Button,
   Modal,
   TextField,
-  MenuItem,
   IconButton,
+  Snackbar,
+  Alert,
+  MenuItem,
+  useTheme,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { Add, Edit, Delete } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { mockDataInvoices } from "../../data/mockData";
-import { Add, Edit, Delete, Visibility } from "@mui/icons-material";
 
-const Catalog = () => {
+const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
+
+const Product = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [rows, setRows] = useState([]);
+  const [materials, setMaterials] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [open, setOpen] = useState(false);
-  const [rows, setRows] = useState(mockDataInvoices); // replace with catalog data
   const [formData, setFormData] = useState({
-    material: "",
-    category: "",
-    subCategory: "",
+    materialId: "",
+    categoryId: "",
+    subCategoryId: "",
     name: "",
     description: "",
-    image: null,
+    netWeight: "",
+    grossWeight: "",
+    images: [],
+  });
+  const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Snackbar
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleSnackbarClose = () =>
+    setSnackbar((prev) => ({ ...prev, open: false }));
 
+  // Fetch dropdown data
+  useEffect(() => {
+    const fetchDropdowns = async () => {
+      try {
+        const [mats, cats, subs] = await Promise.all([
+          axios.get(`${baseUrl}/api/materials`),
+          axios.get(`${baseUrl}/api/categories`),
+          // axios.get(`${baseUrl}/api/subcategories`),
+        ]);
+        console.log("ghgyttytytt");
+        setMaterials(mats.data.data || []);
+        setCategories(cats.data.data || []);
+        setSubCategories(subs.data.data || []);
+      } catch (err) {
+        console.error("Error loading dropdowns:", err);
+      }
+    };
+    fetchDropdowns();
+  }, []);
+
+  // Fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${baseUrl}/api/products`);
+        console.log("res",res)
+        setRows(res.data.data.items || []);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Handle input change
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    if (files) {
+      setFormData((prev) => ({ ...prev, images: Array.from(files) }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleAddItem = () => {
-    const newItem = {
-      id: rows.length + 1,
-      name: formData.name,
-      description: formData.description,
-      material: formData.material,
-      category: formData.category,
-      subCategory: formData.subCategory,
-      image: formData.image ? URL.createObjectURL(formData.image) : "",
-    };
-    setRows([...rows, newItem]);
-    handleClose();
+  // Open/Close Modal
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    setEditId(null);
+    setFormData({
+      materialId: "",
+      categoryId: "",
+      subCategoryId: "",
+      name: "",
+      description: "",
+      netWeight: "",
+      grossWeight: "",
+      images: [],
+    });
   };
 
+  // Add or Update Product
+  const handleSaveItem = async () => {
+    try {
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (key === "images") {
+          formData.images.forEach((file) => data.append("images", file));
+        } else {
+          data.append(key, formData[key]);
+        }
+      });
+
+      if (editId) {
+        // Update
+        const res = await axios.put(`${baseUrl}/api/products/${editId}`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setRows((prev) =>
+          prev.map((row) => (row._id === editId ? res.data : row))
+        );
+        setSnackbar({
+          open: true,
+          message: "Product updated!",
+          severity: "success",
+        });
+      } else {
+        // Add
+        const res = await axios.post(`${baseUrl}/api/products`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setRows((prev) => [...prev, res.data]);
+        setSnackbar({
+          open: true,
+          message: "Product added!",
+          severity: "success",
+        });
+      }
+      handleClose();
+    } catch (err) {
+      console.error("Error saving product:", err);
+      setSnackbar({
+        open: true,
+        message: "Failed to save product!",
+        severity: "error",
+      });
+    }
+  };
+
+  // Delete Product
+  const handleDeleteItem = async (id) => {
+    try {
+      await axios.delete(`${baseUrl}/api/products/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setRows((prev) => prev.filter((row) => row._id !== id));
+      setSnackbar({
+        open: true,
+        message: "Product deleted!",
+        severity: "success",
+      });
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      setSnackbar({
+        open: true,
+        message: "Failed to delete product!",
+        severity: "error",
+      });
+    }
+  };
+
+  // Edit Product
+  const handleEditItem = (product) => {
+    setFormData({
+      materialId: product.materialId || "",
+      categoryId: product.categoryId || "",
+      subCategoryId: product.subCategoryId || "",
+      name: product.name || "",
+      description: product.description || "",
+      netWeight: product.netWeight || "",
+      grossWeight: product.grossWeight || "",
+      images: [],
+    });
+    setEditId(product._id);
+    setOpen(true);
+  };
+
+  // DataGrid columns
   const columns = [
-    {
-      field: "image",
-      headerName: "Image",
-      width: 100,
-      renderCell: (params) =>
-        params.row.image ? (
-          <img
-            src={params.row.image}
-            alt={params.row.name}
-            style={{ width: 50, height: 50, borderRadius: 8 }}
-          />
-        ) : (
-          "No Image"
-        ),
-    },
-    { field: "name", headerName: "Item Name", flex: 1 },
+    { field: "name", headerName: "Product Name", flex: 1 },
     { field: "description", headerName: "Description", flex: 1 },
+    { field: "netWeight", headerName: "Net Wt.", flex: 1 },
+    { field: "grossWeight", headerName: "Gross Wt.", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
       renderCell: (params) => (
         <Box>
-          <IconButton color="white">
-            <Visibility />
-          </IconButton>
-          <IconButton color="secondary">
+          <IconButton
+            color="secondary"
+            onClick={() => handleEditItem(params.row)}
+          >
             <Edit />
           </IconButton>
-          <IconButton color="error">
+          <IconButton
+            color="error"
+            onClick={() => handleDeleteItem(params.row._id)}
+          >
             <Delete />
           </IconButton>
         </Box>
@@ -95,21 +238,19 @@ const Catalog = () => {
 
   return (
     <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center" m="20px">
-  <Header title="CATALOG" subtitle="Catalog Management" />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="Products" subtitle="Manage Products" />
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<Add />}
+          onClick={handleOpen}
+        >
+          Add Product
+        </Button>
+      </Box>
 
-  <Button
-    variant="contained"
-    color="secondary"
-    startIcon={<Add />}
-    onClick={handleOpen}
-  >
-    Add New Item
-  </Button>
-</Box>
-
-
-      {/* Modal for Add Item */}
+      {/* Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box
           p={4}
@@ -122,18 +263,22 @@ const Catalog = () => {
           flexDirection="column"
           gap={2}
         >
-          <Typography variant="h6">Add New Item</Typography>
+          <Typography variant="h6">
+            {editId ? "Edit Product" : "Add Product"}
+          </Typography>
 
+          {/* Dropdowns */}
           <TextField
             select
             label="Material"
-            name="material"
-            value={formData.material}
+            name="materialId"
+            value={formData.materialId}
             onChange={handleChange}
+            fullWidth
           >
-            {["Silver", "Gold", "Platinum"].map((m) => (
-              <MenuItem key={m} value={m}>
-                {m}
+            {materials.map((m) => (
+              <MenuItem key={m._id} value={m._id}>
+                {m.name}
               </MenuItem>
             ))}
           </TextField>
@@ -141,81 +286,110 @@ const Catalog = () => {
           <TextField
             select
             label="Category"
-            name="category"
-            value={formData.category}
+            name="categoryId"
+            value={formData.categoryId}
             onChange={handleChange}
+            fullWidth
           >
-            {["Kids", "Men", "Women"].map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
+            {categories.map((c) => (
+              <MenuItem key={c._id} value={c._id}>
+                {c.name}
               </MenuItem>
             ))}
           </TextField>
 
           <TextField
             select
-            label="Sub-Category"
-            name="subCategory"
-            value={formData.subCategory}
+            label="SubCategory"
+            name="subCategoryId"
+            value={formData.subCategoryId}
             onChange={handleChange}
+            fullWidth
           >
-            {formData.category === "Men" &&
-              ["Rings", "Bracelet", "Chain", "Pendant", "Stones"].map((s) => (
-                <MenuItem key={s} value={s}>
-                  {s}
-                </MenuItem>
-              ))}
-            {formData.category === "Women" &&
-              [
-                "Ring",
-                "Bracelet",
-                "Earrings",
-                "Chain",
-                "Haar",
-                "Chudi",
-              ].map((s) => (
-                <MenuItem key={s} value={s}>
-                  {s}
-                </MenuItem>
-              ))}
+            {subCategories.map((s) => (
+              <MenuItem key={s._id} value={s._id}>
+                {s.name}
+              </MenuItem>
+            ))}
           </TextField>
 
+          {/* Text inputs */}
           <TextField
-            label="Item Name"
+            label="Product Name"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            fullWidth
           />
-
           <TextField
             label="Description"
             name="description"
-            multiline
-            rows={3}
             value={formData.description}
             onChange={handleChange}
+            fullWidth
+            multiline
           />
-
+          <TextField
+            label="Net Weight"
+            name="netWeight"
+            value={formData.netWeight}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Gross Weight"
+            name="grossWeight"
+            value={formData.grossWeight}
+            onChange={handleChange}
+            fullWidth
+          />
           <Button variant="outlined" component="label">
-            Upload Image
-            <input type="file" hidden name="image" onChange={handleChange} />
+            Upload Images
+            <input
+              type="file"
+              name="images"
+              hidden
+              multiple
+              onChange={handleChange}
+            />
           </Button>
 
           <Box display="flex" justifyContent="flex-end" gap={2}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="contained" onClick={handleAddItem}>
-              Save
+            <Button variant="contained" onClick={handleSaveItem}>
+              {editId ? "Update" : "Save"}
             </Button>
           </Box>
         </Box>
       </Modal>
 
-      {/* Items Grid */}
-      <Box mt={3} height="70vh" sx={{ "& .MuiDataGrid-root": { border: "none" } }}>
-        <DataGrid rows={rows} columns={columns} />
+      {/* DataGrid */}
+      <Box mt={3} height="70vh">
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          getRowId={(row) => row._id}
+          loading={loading}
+        />
       </Box>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
 
-export default Catalog;
+export default Product;

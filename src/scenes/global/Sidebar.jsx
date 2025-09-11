@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -153,6 +153,38 @@ const Sidebar = () => {
             >
               Pages
             </Typography>
+
+            <SubMenu title="Catalogue" icon={<ReceiptOutlinedIcon />}>
+              <Item
+                title="Material"
+                to="/material"
+                icon={<AssignmentOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Category"
+                to="/category"
+                icon={<AssignmentOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Sub-Category"
+                to="/sub-category"
+                icon={<AssignmentOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Product"
+                to="/catalog"
+                icon={<ReceiptOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubMenu>
+
             <Item
               title="Manage Team"
               to="/team"
@@ -164,13 +196,6 @@ const Sidebar = () => {
               title="Contacts Information"
               to="/contacts"
               icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Catalog"
-              to="/catalog"
-              icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
