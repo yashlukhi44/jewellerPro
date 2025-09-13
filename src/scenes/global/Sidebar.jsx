@@ -15,6 +15,10 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import logoImage from "./madhavlogo.png";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";   // Material
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";       // Category
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined"; // Sub-Category
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -130,9 +134,9 @@ const Sidebar = () => {
                 >
                   Marco
                 </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
+                {/* <Typography variant="h5" color={colors.greenAccent[500]}>
                   VP Fancy Admin
-                </Typography>
+                </Typography> */}
               </Box>
             </Box>
           )}
@@ -154,36 +158,40 @@ const Sidebar = () => {
               Pages
             </Typography>
 
-            <SubMenu title="Catalogue" icon={<ReceiptOutlinedIcon />}>
+            <SubMenu
+              title={<span style={{ color: "white" }}>Catalogue</span>}
+              icon={<ReceiptOutlinedIcon sx={{ color: "white" }} />}
+            >
               <Item
                 title="Material"
                 to="/material"
-                icon={<AssignmentOutlinedIcon />}
+                icon={<Inventory2OutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Category"
                 to="/category"
-                icon={<AssignmentOutlinedIcon />}
+                icon={<CategoryOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Sub-Category"
                 to="/sub-category"
-                icon={<AssignmentOutlinedIcon />}
+                icon={<AccountTreeOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Product"
                 to="/catalog"
-                icon={<ReceiptOutlinedIcon />}
+                icon={<ShoppingBagOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
             </SubMenu>
+
 
             <Item
               title="Manage Team"

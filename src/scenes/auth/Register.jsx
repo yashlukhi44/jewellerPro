@@ -8,8 +8,18 @@ import {
   Tabs,
   Tab,
   MenuItem,
+  InputAdornment,
 } from "@mui/material";
-import axios from "axios"; // axios instance
+import axios from "axios";
+import {
+  EmailOutlined,
+  PhoneAndroid,
+  LockOutlined,
+  PersonOutline,
+  BusinessOutlined,
+  SmsOutlined,
+} from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 // Setup axios interceptor for auth token
 axios.interceptors.request.use(
@@ -31,19 +41,20 @@ const AuthPage = () => {
     mobile: "",
     businessName: "",
     password: "",
-    otpSendType: "EMAIL", // or "MOBILE"
+    otpSendType: "EMAIL",
   });
   const [otp, setOtp] = useState("");
   const [accountId, setAccountId] = useState("");
   const [error, setError] = useState("");
-  const [step, setStep] = useState("form"); // "form" | "otp"
+  const [step, setStep] = useState("form");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ SIGNUP
+  // Signup
   const handleRegister = async () => {
     const { name, email, mobile, businessName, password, otpSendType } = form;
     if (!name || !email || !mobile || !businessName || !password) {
@@ -67,7 +78,7 @@ const AuthPage = () => {
     }
   };
 
-  // ✅ VERIFY OTP
+  // Verify OTP
   const handleVerifyOtp = async () => {
     if (!otp) {
       setError("OTP is required!");
@@ -75,20 +86,16 @@ const AuthPage = () => {
     }
     try {
       setError("");
-      await axios.post("/verify-otp", {
-        accountId,
-        otp,
-      });
+      await axios.post("/verify-otp", { accountId, otp });
       alert("OTP verified 🎉 You can now login.");
       setStep("form");
-      setTab(0); // switch to login
+      setTab(0);
     } catch (err) {
       setError(err.response?.data?.message || "OTP verification failed!");
     }
   };
 
-  // ✅ LOGIN
-  // ✅ LOGIN
+  // Login
   const handleLogin = async () => {
     if (!form.email && !form.mobile) {
       setError("Email or Mobile is required!");
@@ -98,26 +105,19 @@ const AuthPage = () => {
       setError("Password is required!");
       return;
     }
-
     try {
       setError("");
-
-      // build payload dynamically
       const payload = { password: form.password };
       if (form.email) payload.email = form.email;
       if (form.mobile) payload.mobile = form.mobile;
-
-      console.log("Login payload:", payload); // 🐛 Debug
 
       const res = await axios.post(
         "http://localhost:5000/api/auth/signin",
         payload
       );
-
       localStorage.setItem("token", res.data?.data?.token);
-
       alert("Login successful ✅");
-      // TODO: navigate("/catalog");
+      navigate("/"); // redirect to home after login
     } catch (err) {
       setError(err.response?.data?.message || "Login failed!");
     }
@@ -139,9 +139,19 @@ const AuthPage = () => {
       }}
     >
       <Paper
-        elevation={8}
-        sx={{ width: 400, p: 4, borderRadius: 3, bgcolor: "#232946" }}
+        elevation={10}
+        sx={{
+          width: 420,
+          p: 4,
+          borderRadius: 4,
+          bgcolor: "#232946",
+          textAlign: "center",
+        }}
       >
+        <Typography variant="h5" color="#eebbc3" fontWeight="bold" mb={2}>
+          {tab === 0 ? "Welcome Back 👋" : "Create Your Account 📝"}
+        </Typography>
+
         <Tabs
           value={tab}
           onChange={(e, newValue) => {
@@ -173,8 +183,13 @@ const AuthPage = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              InputProps={{ style: { color: "#b8c1ec" } }}
-              InputLabelProps={{ style: { color: "#b8c1ec" } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Mobile"
@@ -183,8 +198,13 @@ const AuthPage = () => {
               name="mobile"
               value={form.mobile}
               onChange={handleChange}
-              InputProps={{ style: { color: "#b8c1ec" } }}
-              InputLabelProps={{ style: { color: "#b8c1ec" } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PhoneAndroid sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Password"
@@ -194,8 +214,13 @@ const AuthPage = () => {
               name="password"
               value={form.password}
               onChange={handleChange}
-              InputProps={{ style: { color: "#b8c1ec" } }}
-              InputLabelProps={{ style: { color: "#b8c1ec" } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             {error && (
               <Typography color="#eebbc3" variant="body2" sx={{ mt: 1 }}>
@@ -210,10 +235,12 @@ const AuthPage = () => {
                 bgcolor: "#eebbc3",
                 color: "#232946",
                 fontWeight: "bold",
+                borderRadius: "20px",
+                "&:hover": { bgcolor: "#f7ccd2" },
               }}
               onClick={handleLogin}
             >
-              Login
+              🔑 Login
             </Button>
           </>
         )}
@@ -228,6 +255,13 @@ const AuthPage = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonOutline sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Email"
@@ -236,6 +270,13 @@ const AuthPage = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Mobile"
@@ -244,6 +285,13 @@ const AuthPage = () => {
               name="mobile"
               value={form.mobile}
               onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PhoneAndroid sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Business Name"
@@ -252,6 +300,13 @@ const AuthPage = () => {
               name="businessName"
               value={form.businessName}
               onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <BusinessOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Password"
@@ -261,8 +316,15 @@ const AuthPage = () => {
               name="password"
               value={form.password}
               onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
-            <TextField
+            {/* <TextField
               select
               label="Send OTP via"
               fullWidth
@@ -270,10 +332,17 @@ const AuthPage = () => {
               name="otpSendType"
               value={form.otpSendType}
               onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SmsOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             >
               <MenuItem value="EMAIL">Email</MenuItem>
               <MenuItem value="MOBILE">Mobile</MenuItem>
-            </TextField>
+            </TextField> */}
 
             {error && (
               <Typography color="#eebbc3" variant="body2" sx={{ mt: 1 }}>
@@ -283,10 +352,17 @@ const AuthPage = () => {
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 2, bgcolor: "#eebbc3", color: "#232946" }}
+              sx={{
+                mt: 2,
+                bgcolor: "#eebbc3",
+                color: "#232946",
+                fontWeight: "bold",
+                borderRadius: "20px",
+                "&:hover": { bgcolor: "#f7ccd2" },
+              }}
               onClick={handleRegister}
             >
-              Register
+              ✍️ Register
             </Button>
           </>
         )}
@@ -300,6 +376,13 @@ const AuthPage = () => {
               margin="normal"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SmsOutlined sx={{ color: "#b8c1ec" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             {error && (
               <Typography color="#eebbc3" variant="body2" sx={{ mt: 1 }}>
@@ -309,10 +392,17 @@ const AuthPage = () => {
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 2, bgcolor: "#eebbc3", color: "#232946" }}
+              sx={{
+                mt: 2,
+                bgcolor: "#eebbc3",
+                color: "#232946",
+                fontWeight: "bold",
+                borderRadius: "20px",
+                "&:hover": { bgcolor: "#f7ccd2" },
+              }}
               onClick={handleVerifyOtp}
             >
-              Verify OTP
+              ✅ Verify OTP
             </Button>
           </>
         )}

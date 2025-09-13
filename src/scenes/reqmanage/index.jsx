@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,28 +12,50 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Check, Close } from "@mui/icons-material";
+import axios from "axios";
 
-// Mock data for requests
-const mockRequests = [
-  { id: 1, business: "Golden Jewelers", mobile: "9876543210", email: "golden@example.com", status: "pending" },
-  { id: 2, business: "Diamond Co", mobile: "9123456780", email: "diamond@example.com", status: "pending" },
-  { id: 3, business: "Silver Line", mobile: "9988776655", email: "silver@example.com", status: "rejected" },
-];
+const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
 
 const RequestManagement = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [filter, setFilter] = useState("pending");
-  const [requests, setRequests] = useState(mockRequests);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleStatusChange = (id, newStatus) => {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
-    );
+  // ✅ Fetch Requests
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `${baseUrl}/api/trader/requests?status=${filter}&type=relogin&accountId=68ba3dae284ca3c359e5420b`
+      );
+      setRequests(res.data?.data || []);
+    } catch (err) {
+      console.error("Error fetching requests:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredRequests = requests.filter((r) => r.status === filter);
+  useEffect(() => {
+    fetchRequests();
+  }, [filter]);
+
+  // ✅ Handle Accept / Reject
+  const handleStatusChange = async (id, action) => {
+    try {
+      await axios.post(`${baseUrl}/api/trader/update-request-status`, {
+        requestId: id,
+        action,
+        reason: action === "rejected" ? "Rejected by admin" : "",
+      });
+      fetchRequests(); // refresh after update
+    } catch (err) {
+      console.error("Error updating status:", err);
+    }
+  };
 
   const columns = [
     { field: "business", headerName: "Business Name", flex: 1 },
@@ -47,13 +69,13 @@ const RequestManagement = () => {
         <Box>
           <IconButton
             color="success"
-            onClick={() => handleStatusChange(params.row.id, "approved")}
+            onClick={() => handleStatusChange(params.row._id, "approved")}
           >
             <Check />
           </IconButton>
           <IconButton
             color="error"
-            onClick={() => handleStatusChange(params.row.id, "rejected")}
+            onClick={() => handleStatusChange(params.row._id, "rejected")}
           >
             <Close />
           </IconButton>
@@ -81,7 +103,14 @@ const RequestManagement = () => {
       </Box>
 
       <Box mt={3} height="70vh" sx={{ "& .MuiDataGrid-root": { border: "none" } }}>
-        <DataGrid rows={filteredRequests} columns={columns} pageSize={10} />
+        <DataGrid
+          rows={requests}
+          columns={columns}
+          getRowId={(row) => row._id}
+          loading={loading}
+          disableRowSelectionOnClick
+          hideFooterSelectedRowCount
+        />
       </Box>
     </Box>
   );

@@ -16,7 +16,7 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
+const baseUrl = process.env.SERVER_PORT || "http://localhost:5000";
 
 const Material = () => {
   const theme = useTheme();
@@ -187,7 +187,7 @@ const Material = () => {
         <Header title="Material" subtitle="Manage Materials" />
         <Button
           variant="contained"
-          color="secondary"
+          color="success"
           startIcon={<Add />}
           onClick={handleOpen}
         >
@@ -218,9 +218,10 @@ const Material = () => {
             fullWidth
           />
           <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" color="white" onClick={handleClose}>Cancel</Button>
             <Button
               variant="contained"
+              color="success"
               onClick={editId ? handleUpdate : handleAdd}
             >
               {editId ? "Update" : "Save"}
@@ -240,6 +241,8 @@ const Material = () => {
           columns={columns}
           getRowId={(row) => row._id}
           loading={loading}
+          checkboxSelection={false}   // ✅ disables checkboxes
+          disableRowSelectionOnClick  // ✅ prevents row selection when clicking a cell
         />
       </Box>
 
