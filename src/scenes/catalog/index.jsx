@@ -16,6 +16,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+import ImagePicker from "../../components/ImagePicker";
 
 const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
 
@@ -36,7 +37,7 @@ const Product = () => {
     description: "",
     netWeight: "",
     grossWeight: "",
-    images: [],
+    images: [], // base64 array
   });
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -51,19 +52,16 @@ const Product = () => {
   const handleSnackbarClose = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));
 
-  // Fetch dropdown data
+  // Fetch materials & categories
   useEffect(() => {
     const fetchDropdowns = async () => {
       try {
-        const [mats, cats, subs] = await Promise.all([
+        const [mats, cats] = await Promise.all([
           axios.get(`${baseUrl}/api/materials`),
           axios.get(`${baseUrl}/api/categories`),
-          // axios.get(`${baseUrl}/api/subcategories`),
         ]);
-        console.log("ghgyttytytt");
         setMaterials(mats.data.data || []);
         setCategories(cats.data.data || []);
-        setSubCategories(subs.data.data || []);
       } catch (err) {
         console.error("Error loading dropdowns:", err);
       }
@@ -77,8 +75,9 @@ const Product = () => {
       try {
         setLoading(true);
         const res = await axios.get(`${baseUrl}/api/products`);
-        console.log("res",res)
-        setRows(res.data.data.items || []);
+        const items =
+          res.data?.data?.items || res.data?.data || res.data || [];
+        setRows(Array.isArray(items) ? items : []);
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
@@ -88,13 +87,54 @@ const Product = () => {
     fetchProducts();
   }, []);
 
+  // Fetch subcategories by categoryId
+  const fetchSubCategories = async (categoryId) => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/subcategories/${categoryId}`);
+      const data = res.data.data;
+      setSubCategories(Array.isArray(data) ? data : data ? [data] : []);
+    } catch (err) {
+      console.error("Error fetching subcategories:", err);
+      setSubCategories([]);
+    }
+  };
+
+  // Convert file to base64
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  // Remove image by index
+  const handleRemoveImage = (idx) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== idx),
+    }));
+  };
+
   // Handle input change
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
+
     if (files) {
-      setFormData((prev) => ({ ...prev, images: Array.from(files) }));
+      const base64Files = await Promise.all(
+        Array.from(files).map((file) => fileToBase64(file))
+      );
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...base64Files],
+      }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
+    if (name === "categoryId") {
+      setFormData((prev) => ({ ...prev, subCategoryId: "" }));
+      fetchSubCategories(value);
     }
   };
 
@@ -113,30 +153,28 @@ const Product = () => {
       grossWeight: "",
       images: [],
     });
+    setSubCategories([]);
   };
 
   // Add or Update Product
   const handleSaveItem = async () => {
     try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (key === "images") {
-          formData.images.forEach((file) => data.append("images", file));
-        } else {
-          data.append(key, formData[key]);
-        }
-      });
+      const payload = { ...formData };
 
       if (editId) {
-        // Update
-        const res = await axios.put(`${baseUrl}/api/products/${editId}`, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const res = await axios.put(
+          `${baseUrl}/api/products/${editId}`,
+          payload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const updated = res.data?.data || res.data;
         setRows((prev) =>
-          prev.map((row) => (row._id === editId ? res.data : row))
+          prev.map((row) => (row._id === editId ? updated : row))
         );
         setSnackbar({
           open: true,
@@ -144,14 +182,14 @@ const Product = () => {
           severity: "success",
         });
       } else {
-        // Add
-        const res = await axios.post(`${baseUrl}/api/products`, data, {
+        const res = await axios.post(`${baseUrl}/api/products`, payload, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setRows((prev) => [...prev, res.data]);
+        const created = res.data?.data || res.data;
+        setRows((prev) => [...prev, created]);
         setSnackbar({
           open: true,
           message: "Product added!",
@@ -201,9 +239,12 @@ const Product = () => {
       description: product.description || "",
       netWeight: product.netWeight || "",
       grossWeight: product.grossWeight || "",
-      images: [],
+      images: product.images || [],
     });
     setEditId(product._id);
+    if (product.categoryId) {
+      fetchSubCategories(product.categoryId);
+    }
     setOpen(true);
   };
 
@@ -305,6 +346,7 @@ const Product = () => {
             value={formData.subCategoryId}
             onChange={handleChange}
             fullWidth
+            disabled={!formData.categoryId}
           >
             {subCategories.map((s) => (
               <MenuItem key={s._id} value={s._id}>
@@ -343,16 +385,14 @@ const Product = () => {
             onChange={handleChange}
             fullWidth
           />
-          <Button variant="outlined" component="label">
-            Upload Images
-            <input
-              type="file"
-              name="images"
-              hidden
-              multiple
-              onChange={handleChange}
-            />
-          </Button>
+
+          {/* Image Picker */}
+          <ImagePicker
+            images={formData.images}
+            onChange={handleChange}
+            onRemove={handleRemoveImage}
+            multiple
+          />
 
           <Box display="flex" justifyContent="flex-end" gap={2}>
             <Button onClick={handleClose}>Cancel</Button>

@@ -1,20 +1,103 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
-import { ColorModeContext, tokens } from "../../theme";
-import InputBase from "@mui/material/InputBase";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { useState, useEffect } from "react";
+import {
+  Box,
+  IconButton,
+  Modal,
+  Typography,
+  Button,
+  TextField,
+  MenuItem,
+  useTheme,
+  CircularProgress,
+  Stack,
+} from "@mui/material";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+import { tokens } from "../../theme";
+import axios from "axios";
 
-const Topbar = () => {
+// Inactivity Settings & Profile Modal
+const InactivitySettings = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const colorMode = useContext(ColorModeContext);
+
+  const [open, setOpen] = useState(false);
+  const [period, setPeriod] = useState("3");
+  const [profile, setProfile] = useState({
+    businessName: "",
+    mobile: "",
+    email: "",
+    name: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [updating, setUpdating] = useState(false);
+
+  // Fetch profile info
+  useEffect(() => {
+    if (!open) return;
+    setLoading(true);
+    setError("");
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/profile/me");
+        const data = res.data?.data || {};
+        setProfile({
+          businessName: data.businessName || "",
+          name: data.name || "",
+          mobile: data.mobile || "",
+          email: data.email || "",
+        });
+        setPeriod(data.inactivityPeriod ? String(data.inactivityPeriod) : "3");
+      } catch (err) {
+        setError("Error fetching profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [open]);
+
+  // Handle profile field change
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Save inactivity settings
+  const handleSavePeriod = async () => {
+    setError("");
+    try {
+      await axios.put("http://localhost:5000/api/profile/me", {
+        inactivityPeriod: period,
+      });
+      alert("Inactivity period updated successfully!");
+    } catch (err) {
+      setError("Error updating inactivity period");
+    }
+  };
+
+  // Update profile fields
+  const handleUpdateProfile = async () => {
+    setError("");
+    setUpdating(true);
+    try {
+      await axios.put("http://localhost:5000/api/profile/me", {
+        businessName: profile.businessName,
+        name: profile.name,
+        mobile: profile.mobile,
+        // email: profile.email,
+      });
+      alert("Profile updated successfully!");
+      setOpen(false);
+    } catch (err) {
+      setError("Error updating profile");
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   return (
+  <>
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
       <Box
@@ -22,14 +105,10 @@ const Topbar = () => {
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
       </Box>
 
       {/* ICONS */}
-      <Box display="flex">
+      <Box display="flex" style={{ paddingRight: "10px" }}>
         {/* <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
@@ -38,17 +117,131 @@ const Topbar = () => {
           )}
         </IconButton> */}
         <IconButton>
-          <NotificationsOutlinedIcon />
+          {/* <NotificationsOutlinedIcon /> */}
         </IconButton>
         <IconButton>
-          <SettingsOutlinedIcon />
+          {/* <SettingsOutlinedIcon /> */}
         </IconButton>
-        <IconButton>
+        <IconButton onClick={() => setOpen(true)}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>
     </Box>
+
+      {/* Modal */}
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <Box
+          p={4}
+          bgcolor={colors.primary[400]}
+          borderRadius="12px"
+          width="400px"
+          mx="auto"
+          mt="10%"
+          display="flex"
+          flexDirection="column"
+          gap={2}
+        >
+          <Typography variant="h5" mb={2} color={colors.grey[100]}>
+            Profile & Inactivity Settings
+          </Typography>
+
+          {loading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              py={2}
+            >
+              <CircularProgress size={28} />
+            </Box>
+          ) : (
+            <>
+              {/* Profile Fields */}
+              <Stack spacing={2}>
+                <TextField
+                  label="Name"
+                  name="name"
+                  value={profile.name}
+                  onChange={handleProfileChange}
+                  fullWidth
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: colors.grey[100] } }}
+                />
+                <TextField
+                  label="Business Name"
+                  name="businessName"
+                  value={profile.businessName}
+                  onChange={handleProfileChange}
+                  fullWidth
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: colors.grey[100] } }}
+                />
+                <TextField
+                  label="Mobile"
+                  name="mobile"
+                  value={profile.mobile}
+                  onChange={handleProfileChange}
+                  fullWidth
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: colors.grey[100] } }}
+                />
+                <TextField
+                  label="Email"
+                  name="email"
+                  disabled
+                  value={profile.email}
+                  onChange={handleProfileChange}
+                  fullWidth
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: colors.grey[100] } }}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleUpdateProfile}
+                  disabled={updating}
+                  sx={{ borderRadius: 2, fontWeight: "bold" }}
+                >
+                  {updating ? <CircularProgress size={20} /> : "Update Profile"}
+                </Button>
+              </Stack>
+
+              {/* Inactivity Period Dropdown */}
+              <Box mt={3}>
+                <TextField
+                  select
+                  label="Inactivity Period"
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  fullWidth
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: colors.grey[100] } }}
+                >
+                  <MenuItem value="3">3 Months</MenuItem>
+                  <MenuItem value="6">6 Months</MenuItem>
+                  <MenuItem value="12">12 Months</MenuItem>
+                </TextField>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSavePeriod}
+                  sx={{ mt: 2, borderRadius: 2, fontWeight: "bold" }}
+                >
+                  Save Inactivity Period
+                </Button>
+              </Box>
+            </>
+          )}
+
+          {error && (
+            <Typography color="error" mt={2}>
+              {error}
+            </Typography>
+          )}
+        </Box>
+      </Modal>
+    </>
   );
 };
 
-export default Topbar;
+export default InactivitySettings;

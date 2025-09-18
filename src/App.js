@@ -102,14 +102,14 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route
+              {/* <Route
                 path="/sub-category"
                 element={
                   <PrivateRoute>
                     <SubCategory />
                   </PrivateRoute>
                 }
-              />
+              /> */}
               <Route
                 path="/form"
                 element={
