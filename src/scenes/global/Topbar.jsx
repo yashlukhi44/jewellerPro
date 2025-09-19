@@ -39,7 +39,7 @@ const InactivitySettings = () => {
     setError("");
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/profile/me");
+        const res = await axios.get("https://nobita.imontechnologies.in/api/profile/me");
         const data = res.data?.data || {};
         setProfile({
           businessName: data.businessName || "",
@@ -67,7 +67,7 @@ const InactivitySettings = () => {
   const handleSavePeriod = async () => {
     setError("");
     try {
-      await axios.put("http://localhost:5000/api/profile/me", {
+      await axios.put("https://nobita.imontechnologies.in/api/profile/me", {
         inactivityPeriod: period,
       });
       alert("Inactivity period updated successfully!");
@@ -81,7 +81,7 @@ const InactivitySettings = () => {
     setError("");
     setUpdating(true);
     try {
-      await axios.put("http://localhost:5000/api/profile/me", {
+      await axios.put("https://nobita.imontechnologies.in/api/profile/me", {
         businessName: profile.businessName,
         name: profile.name,
         mobile: profile.mobile,
@@ -116,12 +116,7 @@ const InactivitySettings = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton> */}
-        <IconButton>
-          {/* <NotificationsOutlinedIcon /> */}
-        </IconButton>
-        <IconButton>
-          {/* <SettingsOutlinedIcon /> */}
-        </IconButton>
+        
         <IconButton onClick={() => setOpen(true)}>
           <PersonOutlinedIcon />
         </IconButton>
@@ -197,7 +192,7 @@ const InactivitySettings = () => {
                 />
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="success"
                   onClick={handleUpdateProfile}
                   disabled={updating}
                   sx={{ borderRadius: 2, fontWeight: "bold" }}

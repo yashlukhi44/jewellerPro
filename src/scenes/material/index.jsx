@@ -16,7 +16,7 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
+const baseUrl = process.env.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
 
 const Material = () => {
   const theme = useTheme();

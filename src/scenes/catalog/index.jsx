@@ -18,7 +18,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import ImagePicker from "../../components/ImagePicker";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
+const baseUrl = process.env.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
 
 const Product = () => {
   const theme = useTheme();
@@ -283,7 +283,7 @@ const Product = () => {
         <Header title="Products" subtitle="Manage Products" />
         <Button
           variant="contained"
-          color="secondary"
+          color="success"
           startIcon={<Add />}
           onClick={handleOpen}
         >

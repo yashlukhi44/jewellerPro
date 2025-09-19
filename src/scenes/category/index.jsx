@@ -16,7 +16,7 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
+const baseUrl = process.env.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
 
 const Category = () => {
   const theme = useTheme();
@@ -247,7 +247,7 @@ const Category = () => {
         <Header title="Category" subtitle="Manage Categories & Subcategories" />
         <Button
           variant="contained"
-          color="secondary"
+          color="success"
           startIcon={<Add />}
           onClick={handleOpen}
         >

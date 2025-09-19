@@ -33,6 +33,8 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+const baseUrl = import.meta.env?.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
+
 const AuthPage = () => {
   const [tab, setTab] = useState(0); // 0 = Login, 1 = Register
   const [form, setForm] = useState({
@@ -112,7 +114,7 @@ const AuthPage = () => {
       if (form.mobile) payload.mobile = form.mobile;
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signin",
+        `${baseUrl}/api/auth/signin`,
         payload
       );
       localStorage.setItem("token", res.data?.data?.token);

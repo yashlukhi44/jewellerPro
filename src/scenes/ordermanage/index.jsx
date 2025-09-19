@@ -23,7 +23,7 @@ const OrderManagement = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/orders"); // {host}/api/orders
+        const res = await axios.get("https://nobita.imontechnologies.in/api/orders"); // {host}/api/orders
         setRows(res.data);
       } catch (err) {
         console.error("Error fetching orders:", err);
@@ -35,7 +35,7 @@ const OrderManagement = () => {
   // Handle status change (PATCH request)
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:5000/api/orders/${id}/status`, {
+      await axios.patch(`https://nobita.imontechnologies.in/api/orders/${id}/status`, {
         status: newStatus,
       });
 

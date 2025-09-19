@@ -7,7 +7,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  IconButton,
   useTheme,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -15,15 +14,53 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import ChatIcon from "@mui/icons-material/Chat";
 import { tokens } from "../../theme";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Support = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [profile, setProfile] = useState({
+    businessName: "",
+    name: "",
+    mobile: "",
+    email: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await axios.get("https://nobita.imontechnologies.in/api/profile/me");
+        const data = res.data?.data || {};
+        setProfile({
+          businessName: data.businessName || "",
+          name: data.name || "",
+          mobile: data.mobile || "",
+          email: data.email || "",
+        });
+      } catch (err) {
+        setError("Error fetching profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
       {/* Header */}
-      <Typography variant="h4" fontWeight="bold" mb={3} color={colors.grey[100]}>
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        mb={3}
+        color={colors.grey[100]}
+      >
         Support Center
       </Typography>
 
@@ -94,16 +131,27 @@ const Support = () => {
           <Typography variant="h6" fontWeight="600" mb={2}>
             Contact Information
           </Typography>
-          <Box display="flex" alignItems="center" gap={2} mb={2}>
-            <EmailIcon sx={{ color: colors.greenAccent[500] }} />
-            <Typography color={colors.grey[100]}>
-              support@yourcompany.com
-            </Typography>
-          </Box>
-          <Box display="flex" alignItems="center" gap={2}>
-            <PhoneIcon sx={{ color: colors.greenAccent[500] }} />
-            <Typography color={colors.grey[100]}>+91 98765 43210</Typography>
-          </Box>
+
+          {loading ? (
+            <Typography color={colors.grey[100]}>Loading...</Typography>
+          ) : error ? (
+            <Typography color="error">{error}</Typography>
+          ) : (
+            <>
+              <Box display="flex" alignItems="center" gap={2} mb={2}>
+                <EmailIcon sx={{ color: colors.greenAccent[500] }} />
+                <Typography color={colors.grey[100]}>
+                  {profile.email || "Not available"}
+                </Typography>
+              </Box>
+              <Box display="flex" alignItems="center" gap={2}>
+                <PhoneIcon sx={{ color: colors.greenAccent[500] }} />
+                <Typography color={colors.grey[100]}>
+                  {profile.mobile || "Not available"}
+                </Typography>
+              </Box>
+            </>
+          )}
         </Paper>
       </Box>
 
@@ -152,8 +200,8 @@ const Support = () => {
           <AccordionDetails>
             <Typography>
               You can email us at{" "}
-              <strong>support@yourcompany.com</strong> or call{" "}
-              <strong>+91 98765 43210</strong>.
+              <strong>{profile.email || "support@yourcompany.com"}</strong> or
+              call <strong>{profile.mobile || "+91 98765 43210"}</strong>.
             </Typography>
           </AccordionDetails>
         </Accordion>

@@ -14,7 +14,7 @@ import Header from "../../components/Header";
 import { Check, Close } from "@mui/icons-material";
 import axios from "axios";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "http://localhost:5000";
+const baseUrl = process.env.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
 
 const RequestManagement = () => {
   const theme = useTheme();
