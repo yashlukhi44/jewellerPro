@@ -7,14 +7,31 @@ body,
 .content {
   height: 100vh;
   /* height: 100%; */
-  width: 100%;
+  /* width: 100%; */
   font-family: "Source Sans Pro", sans-serif;
 }
 
 .app {
   display: flex;
-  position: relative;
+  height: 100dvh; /* app takes full screen */
+  overflow: hidden; /* prevent double scroll */
 }
+
+.sidebar {
+  width: 250px;       /* adjust as needed */
+  height: 100dvh;     /* full height */
+  overflow: hidden;   /* no scroll */
+  flex-shrink: 0;     /* prevent shrinking */
+}
+
+.main-body-scroll {
+  flex: 1;            /* take remaining space */
+  height: 100dvh;     /* full viewport height */
+  overflow-y: auto;   /* only this scrolls */
+  display: flex;
+  flex-direction: column;
+}
+
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -33,4 +50,9 @@ body,
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.main-body-scroll {
+  height: 100dvh; /* dynamic viewport height */
+  overflow-y: auto;
 }

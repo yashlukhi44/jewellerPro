@@ -278,9 +278,15 @@ const Category = () => {
             fullWidth
           />
           <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose} variant="outlined"
+                sx={{
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.divider,
+                  "&:hover": { bgcolor: theme.palette.action.hover },
+                }}>Cancel</Button>
             <Button
               variant="contained"
+              color="success"
               onClick={editId ? handleUpdate : handleAdd}
             >
               {editId ? "Update" : "Save"}

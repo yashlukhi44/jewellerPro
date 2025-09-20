@@ -219,7 +219,13 @@ const Material = () => {
             fullWidth
           />
           <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button variant="outlined" color="white" onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined"
+                sx={{
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.divider,
+                  "&:hover": { bgcolor: theme.palette.action.hover },
+                }} 
+                onClick={handleClose}>Cancel</Button>
             <Button
               variant="contained"
               color="success"

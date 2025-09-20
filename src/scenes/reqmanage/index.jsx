@@ -95,11 +95,40 @@ const RequestManagement = () => {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           size="small"
+          sx={{
+            minWidth: 180,
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: colors.primary[400], // field background
+              borderRadius: "8px",
+              "& fieldset": {
+                borderColor: colors.grey[400],
+              },
+              "&:hover fieldset": {
+                borderColor: colors.greenAccent[400],
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: colors.greenAccent[500],
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: colors.grey[300],
+            },
+            "& .MuiSvgIcon-root": {
+              color: colors.grey[100],
+            },
+          }}
         >
-          <MenuItem value="pending">Pending</MenuItem>
-          <MenuItem value="approved">Approved</MenuItem>
-          <MenuItem value="rejected">Rejected</MenuItem>
+          <MenuItem value="pending" sx={{ color: colors.blueAccent[300] }}>
+            Pending
+          </MenuItem>
+          <MenuItem value="approved" sx={{ color: colors.greenAccent[400] }}>
+            Approved
+          </MenuItem>
+          <MenuItem value="rejected" sx={{ color: colors.redAccent[400] }}>
+            Rejected
+          </MenuItem>
         </TextField>
+
       </Box>
 
       <Box mt={3} height="70vh" sx={{ "& .MuiDataGrid-root": { border: "none" } }}>

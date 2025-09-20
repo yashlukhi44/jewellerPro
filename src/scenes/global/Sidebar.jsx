@@ -81,25 +81,27 @@ const Sidebar = () => {
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => isCollapsed === true ? setIsCollapsed(!isCollapsed) : null}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
+          <Box
+            sx={{
               margin: "10px 0 20px 0",
               color: colors.grey[100],
+              display: "flex",
+              alignItems: "center",
+              justifyContent: isCollapsed ? "center" : "space-between",
+              px: isCollapsed ? 0 : 2,
             }}
           >
-            {!isCollapsed && (
+            {isCollapsed ? (
+              <IconButton onClick={() => setIsCollapsed(false)}>
+                <MenuOutlinedIcon />
+              </IconButton>
+            ) : (
               <Box
                 display="flex"
-                justifyContent="space-between"
                 alignItems="center"
-                ml="15px"
+                width="100%"
+                justifyContent="space-between"
               >
-                {/* <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINIS
-                </Typography> */}
-                {/* Attach madhavlogo.png here */}
                 <img
                   src={logoImage}
                   alt="Madhav Logo"
@@ -107,12 +109,12 @@ const Sidebar = () => {
                   height="40px"
                   style={{ marginLeft: "10px" }}
                 />
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                <IconButton onClick={() => setIsCollapsed(true)}>
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
             )}
-          </MenuItem>
+          </Box>
 
           {!isCollapsed && (
             <Box mb="25px">
