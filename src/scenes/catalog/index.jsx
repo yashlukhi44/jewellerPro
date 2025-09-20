@@ -18,7 +18,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import ImagePicker from "../../components/ImagePicker";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
+const baseUrl = "https://nobita.imontechnologies.in";
 
 const Product = () => {
   const theme = useTheme();

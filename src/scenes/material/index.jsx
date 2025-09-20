@@ -16,11 +16,12 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 
-const baseUrl = process.env.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
+const baseUrl = "https://nobita.imontechnologies.in";
 
 const Material = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  console.log("baseUrl",baseUrl)
 
   const [materials, setMaterials] = useState([]);
   const [open, setOpen] = useState(false);

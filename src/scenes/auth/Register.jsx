@@ -33,7 +33,7 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const baseUrl = import.meta.env?.REACT_APP_SERVER_PORT || "https://nobita.imontechnologies.in";
+const baseUrl = "https://nobita.imontechnologies.in";
 
 const AuthPage = () => {
   const [tab, setTab] = useState(0); // 0 = Login, 1 = Register
