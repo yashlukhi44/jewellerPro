@@ -217,6 +217,27 @@ const Material = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                color: "#fff", // ✅ input text color white
+                "& fieldset": {
+                  borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                },
+                "&:hover fieldset": {
+                  borderColor: "#fff",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#fff",
+                  borderWidth: "2px",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#fff", // ✅ label stays white when focused
+              },
+            }}
           />
           <Box display="flex" justifyContent="flex-end" gap={2}>
             <Button variant="outlined"

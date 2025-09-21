@@ -89,14 +89,54 @@ const Support = () => {
               fullWidth
               label="Your Name"
               variant="outlined"
-              sx={{ input: { color: colors.grey[100] } }}
+              sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
             />
             <TextField
               fullWidth
               label="Your Email"
               type="email"
               variant="outlined"
-              sx={{ input: { color: colors.grey[100] } }}
+              sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
             />
             <TextField
               fullWidth
@@ -104,7 +144,27 @@ const Support = () => {
               multiline
               rows={4}
               variant="outlined"
-              sx={{ textarea: { color: colors.grey[100] } }}
+              sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
             />
             <Button
               variant="contained"

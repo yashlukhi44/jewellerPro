@@ -5,25 +5,45 @@ import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/catalog";
-import Contacts from "./scenes/contacts";
 import Material from "./scenes/material/index";
 import Category from "./scenes/category/index";
-import SubCategory from "./scenes/subCategory/index";
-import Bar from "./scenes/bar";
-import Form from "./scenes/form";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import FAQ from "./scenes/faq";
 import Register from "./scenes/auth/Register";
 import Support from "./scenes/support/index";
 import Analytics from "./scenes/analytics/index";
 import Inactivity from "./scenes/inactivity";
-import Test from "./components/test";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, Typography } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import Calendar from "./scenes/calendar/calendar";
 import ReqManage from "./scenes/reqmanage/index";
 import OrderManage from "./scenes/ordermanage/index";
+import { Box } from "@mui/system";
+
+// 404 Page Component
+// 404 Page Component
+const NotFound = () => (
+  <Box
+    sx={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      bgcolor: "#1a2236",
+      zIndex: 2000,
+    }}
+  >
+    <Box>
+      <Typography variant="h1" sx={{ fontSize: { xs: 80, md: 150 }, fontWeight: 700 }}>
+        404
+      </Typography>
+      <Typography variant="h5" sx={{ mt: 2, display:'flex', justifyContent:"center" }}>
+        Page Not Found
+      </Typography>
+    </Box>
+  </Box>
+);
 
 // PrivateRoute component
 const PrivateRoute = ({ children }) => {
@@ -40,168 +60,100 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          
           <Sidebar isSidebar={isSidebar} />
           <div className="main-body-scroll">
-          <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
-            {/* hey */}
-            <Routes>
-              <Route path="/login" element={<Register />} />
-              <Route
-                path="/"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/test"
-                element={
-                  <PrivateRoute>
-                    <Test />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/team"
-                element={
-                  <PrivateRoute>
-                    <Team />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/contacts"
-                element={
-                  <PrivateRoute>
-                    <Contacts />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/catalog"
-                element={
-                  <PrivateRoute>
-                    <Invoices />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/material"
-                element={
-                  <PrivateRoute>
-                    <Material />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/category"
-                element={
-                  <PrivateRoute>
-                    <Category />
-                  </PrivateRoute>
-                }
-              />
-              {/* <Route
-                path="/sub-category"
-                element={
-                  <PrivateRoute>
-                    <SubCategory />
-                  </PrivateRoute>
-                }
-              /> */}
-              <Route
-                path="/form"
-                element={
-                  <PrivateRoute>
-                    <Form />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/bar"
-                element={
-                  <PrivateRoute>
-                    <Bar />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/pie"
-                element={
-                  <PrivateRoute>
-                    <Pie />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/line"
-                element={
-                  <PrivateRoute>
-                    <Line />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/faq"
-                element={
-                  <PrivateRoute>
-                    <FAQ />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/support"
-                element={
-                  <PrivateRoute>
-                    <Support />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/analytics"
-                element={
-                  <PrivateRoute>
-                    <Analytics />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/inactivity"
-                element={
-                  <PrivateRoute>
-                    <Inactivity />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/calendar"
-                element={
-                  <PrivateRoute>
-                    <Calendar />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/req-manage"
-                element={
-                  <PrivateRoute>
-                    <ReqManage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/order-manage"
-                element={
-                  <PrivateRoute>
-                    <OrderManage />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </main>
+            <main className="content">
+              <Topbar setIsSidebar={setIsSidebar} />
+              <Routes>
+                {/* Public Route */}
+                <Route path="/login" element={<Register />} />
+
+                {/* Private Routes */}
+                <Route
+                  path="/"
+                  element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/jewelers"
+                  element={
+                    <PrivateRoute>
+                      <Team />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/catalog"
+                  element={
+                    <PrivateRoute>
+                      <Invoices />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/material"
+                  element={
+                    <PrivateRoute>
+                      <Material />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/category"
+                  element={
+                    <PrivateRoute>
+                      <Category />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/support"
+                  element={
+                    <PrivateRoute>
+                      <Support />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <PrivateRoute>
+                      <Analytics />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/inactivity"
+                  element={
+                    <PrivateRoute>
+                      <Inactivity />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/req-manage"
+                  element={
+                    <PrivateRoute>
+                      <ReqManage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/order-manage"
+                  element={
+                    <PrivateRoute>
+                      <OrderManage />
+                    </PrivateRoute>
+                  }
+                />
+
+                {/* Catch-all 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
           </div>
         </div>
       </ThemeProvider>

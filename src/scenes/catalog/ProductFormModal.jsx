@@ -238,6 +238,27 @@ const ProductFormModal = ({
                 fullWidth
                 size="medium"
                 variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               >
                 {materials.map((m) => (
                   <MenuItem key={m._id} value={m._id}>
@@ -256,6 +277,27 @@ const ProductFormModal = ({
                 fullWidth
                 size="medium"
                 variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               >
                 {categories.map((c) => (
                   <MenuItem key={c._id} value={c._id}>
@@ -275,6 +317,27 @@ const ProductFormModal = ({
                 size="medium"
                 variant="outlined"
                 disabled={!formData.categoryId}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               >
                 {subCategories.map((s) => (
                   <MenuItem key={s._id} value={s._id}>
@@ -292,6 +355,27 @@ const ProductFormModal = ({
                 fullWidth
                 size="medium"
                 variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               />
               <TextField
                 label="Description"
@@ -303,6 +387,27 @@ const ProductFormModal = ({
                 minRows={3}
                 size="medium"
                 variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               />
               <TextField
                 label="Net Weight"
@@ -312,6 +417,27 @@ const ProductFormModal = ({
                 fullWidth
                 size="medium"
                 variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               />
               <TextField
                 label="Gross Weight"
@@ -321,6 +447,27 @@ const ProductFormModal = ({
                 fullWidth
                 size="medium"
                 variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "#fff", // ✅ input text color white
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#fff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fff",
+                      borderWidth: "2px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#fff", // ✅ label stays white when focused
+                  },
+                }}
               />
             </Box>
 

@@ -91,7 +91,7 @@ const RequestManagement = () => {
 
         <TextField
           select
-          label="Filter Status"
+          label="Status"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           size="small"
@@ -111,7 +111,10 @@ const RequestManagement = () => {
               },
             },
             "& .MuiInputLabel-root": {
-              color: colors.grey[300],
+              color: "#fff !important", // ✅ always white
+            },
+            "& .Mui-focused .MuiInputLabel-root": {
+              color: "#fff !important", // ✅ keep white when focused
             },
             "& .MuiSvgIcon-root": {
               color: colors.grey[100],
@@ -128,6 +131,7 @@ const RequestManagement = () => {
             Rejected
           </MenuItem>
         </TextField>
+
 
       </Box>
 

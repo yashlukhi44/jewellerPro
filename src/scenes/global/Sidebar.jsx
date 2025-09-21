@@ -195,13 +195,13 @@ const Sidebar = () => {
             </SubMenu>
 
 
-            {/* <Item
-              title="Manage Team"
-              to="/team"
+            <Item
+              title="Manage Jewelers"
+              to="/jewelers"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            /> */}
+            />
             {/* <Item
               title="Contacts Information"
               to="/contacts"
