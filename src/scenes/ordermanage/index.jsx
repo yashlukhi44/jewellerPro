@@ -5,8 +5,6 @@ import {
   IconButton,
   useTheme,
   Tooltip,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";

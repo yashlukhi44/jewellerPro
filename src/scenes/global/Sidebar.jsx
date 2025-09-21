@@ -224,6 +224,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="Past Orders"
+              to="/past-order"
+              icon={<ShoppingCartOutlinedIcon  />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Support"
               to="/support"
               icon={<HelpOutlineOutlinedIcon   />}

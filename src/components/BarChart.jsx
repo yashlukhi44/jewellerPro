@@ -1,20 +1,11 @@
 import { useTheme, Box } from "@mui/material";
-import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { tokens } from "../theme";
 import { useEffect, useRef, useState } from "react";
 
-const CustomBarChart = ({ isDashboard = false }) => {
+const CustomBarChart = ({ data, isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const seriesKeys = ["hot dog", "burger", "sandwich", "kebab", "fries", "donut"];
-  const xLabels = data.map((d) => d.country);
-
-  const series = seriesKeys.map((key) => ({
-    label: key,
-    data: data.map((d) => d[key]),
-  }));
 
   // Track container size
   const containerRef = useRef(null);
@@ -32,6 +23,24 @@ const CustomBarChart = ({ isDashboard = false }) => {
     return () => observer.disconnect();
   }, []);
 
+  // Safe color palette
+  const colorPalette = [
+    colors?.blueAccent?.[400] || "#2196f3",
+    colors?.greenAccent?.[500] || "#4caf50",
+    colors?.redAccent?.[400] || "#f44336",
+    colors?.orangeAccent?.[400] || "#ff9800",
+    colors?.yellowAccent?.[400] || "#ffeb3b",
+    colors?.purpleAccent?.[400] || "#9c27b0",
+    colors?.blueAccent?.[600] || "#1976d2",
+    colors?.redAccent?.[500] || "#d32f2f",
+  ];
+
+  const series = data.map((item, index) => ({
+    label: item.name,
+    data: [item.value],
+    color: colorPalette[index % colorPalette.length],
+  }));
+
   return (
     <Box
       ref={containerRef}
@@ -46,24 +55,21 @@ const CustomBarChart = ({ isDashboard = false }) => {
           height={size.height}
           xAxis={[
             {
-              data: xLabels,
+              data: ["Accounts"],
               scaleType: "band",
-              label: isDashboard ? "" : "Country",
               tickLabelStyle: { fill: colors.grey[100] },
             },
           ]}
           yAxis={[
             {
-              label: isDashboard ? "" : "Food",
+              label: isDashboard ? "" : "Count",
               tickLabelStyle: { fill: colors.grey[100] },
             },
           ]}
           series={series}
           borderRadius={4}
-          colors={["#ff7043", "#29b6f6", "#66bb6a", "#ab47bc", "#ffa726", "#ef5350"]}
-          legend={{
-            hidden: isDashboard,
-          }}
+          colors={series.map((s) => s.color)}
+          legend={{ hidden: !isDashboard ? false : true }}
           margin={{ top: 30, right: 30, bottom: 50, left: 60 }}
         />
       )}

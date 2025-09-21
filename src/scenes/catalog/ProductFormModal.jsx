@@ -32,9 +32,12 @@ const ProductFormModal = ({
     subCategoryId: "",
     name: "",
     description: "",
+    images: [],
+    availableColors: [], // new
     netWeight: "",
     grossWeight: "",
-    images: [],
+    price: "",          // new
+    discountPrice: "",  // new
   });
   const [loading, setLoading] = useState(false);
 
@@ -468,6 +471,27 @@ const ProductFormModal = ({
                     color: "#fff", // ✅ label stays white when focused
                   },
                 }}
+              />
+              <TextField
+                label="Price"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+                fullWidth
+                size="medium"
+                variant="outlined"
+              />
+
+              <TextField
+                label="Discount Price"
+                name="discountPrice"
+                type="number"
+                value={formData.discountPrice}
+                onChange={handleChange}
+                fullWidth
+                size="medium"
+                variant="outlined"
               />
             </Box>
 

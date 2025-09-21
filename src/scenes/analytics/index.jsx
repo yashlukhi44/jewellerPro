@@ -35,7 +35,9 @@ const Analytics = () => {
       setError("");
       try {
         // Fetch status summary
-        const statsRes = await axios.get("https://nobita.imontechnologies.in/api/profile/accounts/status-summary");
+        const statsRes = await axios.get(
+          "https://nobita.imontechnologies.in/api/profile/accounts/status-summary"
+        );
         const statsData = statsRes?.data?.data || {};
         setStats([
           {
@@ -72,15 +74,65 @@ const Analytics = () => {
 
     fetchData();
   }, []);
+
+  // ✅ Handle Download as CSV
+  const handleDownloadCSV = () => {
+    // Convert Stats
+    const statsRows = stats.map((s) => `${s.title},${s.value}`).join("\n");
+
+    // Convert Most Viewed
+    const viewedRows =
+      mostViewed?.data
+        ?.map(
+          (item) =>
+            `${item.name},${item.description || ""},${item.viewCount || 0}`
+        )
+        .join("\n") || "";
+
+    // Convert Most Ordered
+    const orderedRows =
+      mostOrdered?.data
+        ?.map(
+          (item) =>
+            `${item.name},${item.description || ""},${item.orderCount || 0}`
+        )
+        .join("\n") || "";
+
+    // Create CSV content
+    const csvContent = [
+      "Stats",
+      "Title,Value",
+      statsRows,
+      "",
+      "Most Viewed Products",
+      "Name,Description,Views",
+      viewedRows,
+      "",
+      "Most Ordered Products",
+      "Name,Description,Orders",
+      orderedRows,
+    ].join("\n");
+
+    // Download as CSV
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "analytics-report.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Render helper for lists
   const renderProductList = (items, type) => (
-    
     <Paper
-    elevation={3}
-    sx={{
-      p: 3,
-      backgroundColor: colors.primary[400],
-      borderRadius: 3,
-    }}
+      elevation={3}
+      sx={{
+        p: 3,
+        backgroundColor: colors.primary[400],
+        borderRadius: 3,
+      }}
     >
       <Box display="flex" alignItems="center" gap={1} mb={2}>
         <TrendingUpIcon sx={{ color: colors.greenAccent[500] }} />
@@ -136,6 +188,7 @@ const Analytics = () => {
         </Typography>
         <Button
           startIcon={<DownloadOutlinedIcon />}
+          onClick={handleDownloadCSV}
           sx={{
             backgroundColor: colors.blueAccent[700],
             color: colors.grey[100],

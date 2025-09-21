@@ -15,6 +15,7 @@ import { CssBaseline, ThemeProvider, Typography } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import ReqManage from "./scenes/reqmanage/index";
 import OrderManage from "./scenes/ordermanage/index";
+import PastOrder from "./scenes/pastorder/index";
 import { Box } from "@mui/system";
 
 // 404 Page Component
@@ -146,6 +147,14 @@ function App() {
                   element={
                     <PrivateRoute>
                       <OrderManage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/past-order"
+                  element={
+                    <PrivateRoute>
+                      <PastOrder />
                     </PrivateRoute>
                   }
                 />
