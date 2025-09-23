@@ -21,6 +21,7 @@ const ProductFormModal = ({
   editData,
   fetchProducts,
 }) => {
+  console.log("editData",editData)
   const theme = useTheme();
 
   const [materials, setMaterials] = useState([]);
@@ -32,7 +33,7 @@ const ProductFormModal = ({
     subCategoryId: "",
     name: "",
     description: "",
-    images: [],
+    imageUrls: [],
     availableColors: [], // new
     netWeight: "",
     grossWeight: "",
@@ -40,6 +41,7 @@ const ProductFormModal = ({
     discountPrice: "",  // new
   });
   const [loading, setLoading] = useState(false);
+  console.log("formData",formData)
 
   // Fetch dropdowns
   useEffect(() => {
@@ -77,10 +79,12 @@ const ProductFormModal = ({
         categoryId: editData.categoryId || "",
         subCategoryId: editData.subCategoryId || "",
         name: editData.name || "",
+        price: editData.price || "",
+        discountPrice: editData.discountPrice || "",
         description: editData.description || "",
         netWeight: editData.netWeight || "",
         grossWeight: editData.grossWeight || "",
-        images: editData.images || [],
+        imageUrls: editData.imageUrls || [],
       });
       if (editData.categoryId) fetchSubCategories(editData.categoryId);
     } else {
@@ -90,9 +94,11 @@ const ProductFormModal = ({
         subCategoryId: "",
         name: "",
         description: "",
+        discountPrice: "",
+        price: "",
         netWeight: "",
         grossWeight: "",
-        images: [],
+        imageUrls: [],
       });
       setSubCategories([]);
     }
@@ -108,19 +114,18 @@ const ProductFormModal = ({
     });
 
   // Handle input change
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files) {
-      const base64Files = await Promise.all(
-        Array.from(files).map((file) => fileToBase64(file))
-      );
       setFormData((prev) => ({
         ...prev,
-        images: [...prev.images, ...base64Files],
+        imageUrls: [...prev.imageUrls, ...Array.from(files)], // keep File objects
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+
     if (name === "categoryId") {
       setFormData((prev) => ({ ...prev, subCategoryId: "" }));
       fetchSubCategories(value);
@@ -131,7 +136,7 @@ const ProductFormModal = ({
   const handleRemoveImage = (idx) => {
     setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== idx),
+      imageUrls: prev.imageUrls.filter((_, i) => i !== idx),
     }));
   };
 
@@ -140,16 +145,32 @@ const ProductFormModal = ({
     e.preventDefault();
     try {
       setLoading(true);
-      const payload = { ...formData };
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("materialId", formData.materialId);
+      formDataToSend.append("categoryId", formData.categoryId);
+      formDataToSend.append("subCategoryId", formData.subCategoryId);
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("netWeight", formData.netWeight);
+      formDataToSend.append("grossWeight", formData.grossWeight);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("discountPrice", formData.discountPrice);
+
+      // ✅ append all imageUrls
+      formData.imageUrls.forEach((file) => {
+        formDataToSend.append("images", file); // backend expects "imageUrls"
+      });
+
       let savedProduct;
 
       if (editData && editData._id) {
         const res = await axios.put(
           `${baseUrl}/api/products/${editData._id}`,
-          payload,
+          formDataToSend,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
@@ -157,18 +178,20 @@ const ProductFormModal = ({
         savedProduct = res.data?.data || res.data;
         onSave(savedProduct, true);
       } else {
-        const res = await axios.post(`${baseUrl}/api/products`, payload, {
+        const res = await axios.post(`${baseUrl}/api/products`, formDataToSend, {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         savedProduct = res.data?.data || res.data;
         onSave(savedProduct, false);
       }
+
       fetchProducts && fetchProducts();
-    } catch (err) {}
-    finally {
+    } catch (err) {
+      console.error("Save error", err);
+    } finally {
       setLoading(false);
     }
   };
@@ -551,12 +574,12 @@ const ProductFormModal = ({
               variant="subtitle1"
               fontWeight={600}
               mb={2}
-              color={theme.palette.primary.main}
+              color='white'
             >
-              Product Images
+              Product imageUrls
             </Typography>
             <ImagePicker
-              images={formData.images}
+              imageUrls={formData.imageUrls}
               onChange={handleChange}
               onRemove={handleRemoveImage}
               multiple
