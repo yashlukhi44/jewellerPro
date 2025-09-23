@@ -5,7 +5,7 @@ import {
   Button,
   TextField,
   MenuItem,
-  Modal,
+  Drawer,
   useTheme,
   Paper,
 } from "@mui/material";
@@ -14,14 +14,7 @@ import ImagePicker from "../../components/ImagePicker";
 
 const baseUrl = "https://nobita.imontechnologies.in";
 
-const ProductFormModal = ({
-  open,
-  onClose,
-  onSave,
-  editData,
-  fetchProducts,
-}) => {
-  console.log("editData",editData)
+const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) => {
   const theme = useTheme();
 
   const [materials, setMaterials] = useState([]);
@@ -34,14 +27,13 @@ const ProductFormModal = ({
     name: "",
     description: "",
     imageUrls: [],
-    availableColors: [], // new
+    availableColors: [],
     netWeight: "",
     grossWeight: "",
-    price: "",          // new
-    discountPrice: "",  // new
+    price: "",
+    discountPrice: "",
   });
   const [loading, setLoading] = useState(false);
-  console.log("formData",formData)
 
   // Fetch dropdowns
   useEffect(() => {
@@ -53,20 +45,20 @@ const ProductFormModal = ({
         ]);
         setMaterials(mats.data.data || []);
         setCategories(cats.data.data || []);
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+      }
     };
     fetchDropdowns();
   }, []);
 
-  // Fetch subcategories by category
+  // Fetch subcategories
   const fetchSubCategories = async (categoryId) => {
     try {
-      const res = await axios.get(
-        `${baseUrl}/api/subcategories/${categoryId}`
-      );
+      const res = await axios.get(`${baseUrl}/api/subcategories/${categoryId}`);
       const data = res.data.data;
       setSubCategories(Array.isArray(data) ? data : data ? [data] : []);
-    } catch (err) {
+    } catch {
       setSubCategories([]);
     }
   };
@@ -104,23 +96,13 @@ const ProductFormModal = ({
     }
   }, [editData, open]);
 
-  // File helper
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
-  // Handle input change
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (files) {
       setFormData((prev) => ({
         ...prev,
-        imageUrls: [...prev.imageUrls, ...Array.from(files)], // keep File objects
+        imageUrls: [...prev.imageUrls, ...Array.from(files)],
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -132,7 +114,6 @@ const ProductFormModal = ({
     }
   };
 
-  // Remove image
   const handleRemoveImage = (idx) => {
     setFormData((prev) => ({
       ...prev,
@@ -140,26 +121,17 @@ const ProductFormModal = ({
     }));
   };
 
-  // Save or update
   const handleSave = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-
       const formDataToSend = new FormData();
-      formDataToSend.append("materialId", formData.materialId);
-      formDataToSend.append("categoryId", formData.categoryId);
-      formDataToSend.append("subCategoryId", formData.subCategoryId);
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("netWeight", formData.netWeight);
-      formDataToSend.append("grossWeight", formData.grossWeight);
-      formDataToSend.append("price", formData.price);
-      formDataToSend.append("discountPrice", formData.discountPrice);
-
-      // ✅ append all imageUrls
-      formData.imageUrls.forEach((file) => {
-        formDataToSend.append("images", file); // backend expects "imageUrls"
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "imageUrls") {
+          value.forEach((file) => formDataToSend.append("images", file));
+        } else {
+          formDataToSend.append(key, value);
+        }
       });
 
       let savedProduct;
@@ -197,20 +169,11 @@ const ProductFormModal = ({
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-        bgcolor="rgba(0,0,0,0.5)"
-      >
+      <Drawer anchor="right" open={open} onClose={onClose}>
         <Paper
           elevation={6}
           sx={{
             width: 880,
-            borderRadius: 3,
-            overflow: "hidden",
             display: "flex",
             bgcolor: theme.palette.background.default,
           }}
@@ -570,13 +533,8 @@ const ProductFormModal = ({
               bgcolor: theme.palette.background.default,
             }}
           >
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              mb={2}
-              color='white'
-            >
-              Product imageUrls
+            <Typography variant="subtitle1" fontWeight={600} mb={2} color="white">
+              Product Images
             </Typography>
             <ImagePicker
               imageUrls={formData.imageUrls}
@@ -586,9 +544,8 @@ const ProductFormModal = ({
             />
           </Box>
         </Paper>
-      </Box>
-    </Modal>
+      </Drawer>
   );
 };
 
-export default ProductFormModal;
+export default ProductFormDrawer;
