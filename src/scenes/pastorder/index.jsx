@@ -52,8 +52,8 @@ const PastOrders = () => {
       try {
         const token = localStorage.getItem("token");
         const url = status
-          ? `http://localhost:5000/api/orders/past-month-orders?status=${status}`
-          : `http://localhost:5000/api/orders/past-month-orders`;
+          ? `https://nobita.imontechnologies.in/api/orders/past-month-orders?status=${status}`
+          : `https://nobita.imontechnologies.in/api/orders/past-month-orders`;
 
         const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
@@ -124,7 +124,7 @@ const PastOrders = () => {
       },
     }}
   >
-    <MenuItem value="">All</MenuItem>
+    {/* <MenuItem value="all">All</MenuItem> */}
     <MenuItem value="cancelled">Cancelled</MenuItem>
     <MenuItem value="pending">Pending</MenuItem>
     <MenuItem value="confirmed">Confirmed</MenuItem>

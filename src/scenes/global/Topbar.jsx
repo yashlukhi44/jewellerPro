@@ -46,8 +46,9 @@ const InactivitySettings = () => {
           name: data.name || "",
           mobile: data.mobile || "",
           email: data.email || "",
+          disableThresholdMonths: period
         });
-        setPeriod(data.inactivityPeriod ? String(data.inactivityPeriod) : "3");
+        setPeriod(data.disableThresholdMonths ? String(data.disableThresholdMonths) : "3");
       } catch (err) {
         setError("Error fetching profile");
       } finally {
@@ -63,20 +64,8 @@ const InactivitySettings = () => {
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save inactivity settings
-  const handleSavePeriod = async () => {
-    setError("");
-    try {
-      await axios.put("https://nobita.imontechnologies.in/api/profile/me", {
-        inactivityPeriod: period,
-      });
-      alert("Inactivity period updated successfully!");
-    } catch (err) {
-      setError("Error updating inactivity period");
-    }
-  };
-
   // Update profile fields
+    // Update profile fields
   const handleUpdateProfile = async () => {
     setError("");
     setUpdating(true);
@@ -85,7 +74,7 @@ const InactivitySettings = () => {
         businessName: profile.businessName,
         name: profile.name,
         mobile: profile.mobile,
-        // email: profile.email,
+        disableThresholdMonths: Number(period),
       });
       alert("Profile updated successfully!");
       setOpen(false);
@@ -190,19 +179,6 @@ const InactivitySettings = () => {
                   variant="outlined"
                   InputLabelProps={{ style: { color: colors.grey[100] } }}
                 />
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={handleUpdateProfile}
-                  disabled={updating}
-                  sx={{ borderRadius: 2, fontWeight: "bold" }}
-                >
-                  {updating ? <CircularProgress size={20} /> : "Update Profile"}
-                </Button>
-              </Stack>
-
-              {/* Inactivity Period Dropdown */}
-              <Box mt={3}>
                 <TextField
                   select
                   label="Inactivity Period"
@@ -218,13 +194,14 @@ const InactivitySettings = () => {
                 </TextField>
                 <Button
                   variant="contained"
-                  color="primary"
-                  onClick={handleSavePeriod}
-                  sx={{ mt: 2, borderRadius: 2, fontWeight: "bold" }}
+                  color="success"
+                  onClick={handleUpdateProfile}
+                  disabled={updating}
+                  sx={{ borderRadius: 2, fontWeight: "bold" }}
                 >
-                  Save Inactivity Period
+                  {updating ? <CircularProgress size={20} /> : "Update Profile"}
                 </Button>
-              </Box>
+              </Stack>
             </>
           )}
 

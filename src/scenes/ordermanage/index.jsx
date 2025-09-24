@@ -118,23 +118,23 @@ const OrderManagement = () => {
     return <Chip label={params.value} color={color} variant="outlined" />;
   },
 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      flex: 0.5,
-      renderCell: (params) => (
-        <Tooltip title="Copy Contact Details">
-          <IconButton
-            color="primary"
-            onClick={() =>
-              handleCopy(params.row.phone, params.row.email)
-            }
-          >
-            <ContentCopyIcon />
-          </IconButton>
-        </Tooltip>
-      ),
-    },
+    // {
+    //   field: "actions",
+    //   headerName: "Actions",
+    //   flex: 0.5,
+    //   renderCell: (params) => (
+    //     <Tooltip title="Copy Contact Details">
+    //       <IconButton
+    //         color="primary"
+    //         onClick={() =>
+    //           handleCopy(params.row.phone, params.row.email)
+    //         }
+    //       >
+    //         <ContentCopyIcon />
+    //       </IconButton>
+    //     </Tooltip>
+    //   ),
+    // },
   ];
 
   return (

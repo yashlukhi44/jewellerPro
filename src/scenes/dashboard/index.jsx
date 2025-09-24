@@ -27,7 +27,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          "http://localhost:5000/api/profile/accounts/status-summary",
+          "https://nobita.imontechnologies.in/api/profile/accounts/status-summary",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (res.data?.data) {
