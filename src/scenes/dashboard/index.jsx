@@ -23,22 +23,35 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(
-          "https://nobita.imontechnologies.in/api/profile/accounts/status-summary",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (res.data?.data) {
-          setSummary(res.data.data);
-        }
-      } catch (err) {
-        console.error("Error fetching summary:", err);
+  const fetchSummary = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        "https://nobita.imontechnologies.in/api/profile/accounts/status-summary",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.data?.data) {
+        const data = res.data.data;
+
+        // Ensure all fields have a number, defaulting to 0
+        setSummary({
+          initial: data.initial ?? 0,
+          active: data.active ?? 0,
+          disabled: data.disabled ?? 0,
+          pendingOrders: data.pendingOrders ?? 0,
+          pendingSignupRequests: data.pendingSignupRequests ?? 0,
+          rejectedSignupRequests: data.rejectedSignupRequests ?? 0,
+          pendingResignRequests: data.pendingResignRequests ?? 0,
+          rejectedResignRequests: data.rejectedResignRequests ?? 0,
+        });
       }
-    };
-    fetchSummary();
-  }, []);
+    } catch (err) {
+      console.error("Error fetching summary:", err);
+    }
+  };
+  fetchSummary();
+}, []);
 
   // Prepare graph data
   const graphData = [
