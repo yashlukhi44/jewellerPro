@@ -35,29 +35,26 @@ const ImagePicker = ({ imageUrls = [], onChange, multiple = true, onRemove }) =>
         />
       </Button>
 
-      {/* Image previews */}
+      {/* Masonry-like grid with CSS only */}
       <Box
-        display="grid"
-        gridTemplateColumns="repeat(auto-fill, minmax(90px, 1fr))"
-        gap={2}
-        width="100%"
-        justifyItems="center"
+        sx={{
+          columnCount: { xs: 2, sm: 3, md: 4 }, // responsive columns
+          columnGap: "16px",
+          width: "100%",
+        }}
       >
         {imageUrls.map((img, idx) => (
           <Box
             key={idx}
-            position="relative"
             sx={{
-              width: 90,
-              height: 90,
+              position: "relative",
+              mb: 2,
+              breakInside: "avoid", // important for masonry
               borderRadius: 2,
               overflow: "hidden",
               boxShadow: 3,
               border: `2px solid ${theme.palette.divider}`,
               backgroundColor: theme.palette.background.paper,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
             }}
           >
             <img
@@ -65,8 +62,8 @@ const ImagePicker = ({ imageUrls = [], onChange, multiple = true, onRemove }) =>
               alt={`preview-${idx}`}
               style={{
                 width: "100%",
-                height: "100%",
-                objectFit: "cover",
+                display: "block",
+                borderRadius: "8px",
               }}
             />
             {onRemove && (
@@ -76,8 +73,8 @@ const ImagePicker = ({ imageUrls = [], onChange, multiple = true, onRemove }) =>
                   onClick={() => onRemove(idx)}
                   sx={{
                     position: "absolute",
-                    top: 4,
-                    right: 4,
+                    top: 8,
+                    right: 8,
                     background: theme.palette.error.main,
                     color: theme.palette.error.contrastText,
                     boxShadow: 2,

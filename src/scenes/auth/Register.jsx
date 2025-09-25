@@ -73,7 +73,7 @@ const AuthPage = () => {
         otpSendType,
         password,
       });
-      setAccountId(res.data?.data?.accountId);
+      setAccountId(res.data?.data?.account?.id);
       setStep("otp");
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed!");
@@ -118,6 +118,8 @@ const AuthPage = () => {
         payload
       );
       localStorage.setItem("token", res.data?.data?.token);
+      localStorage.setItem("accountId", res.data?.data?.account?.id);
+      console.log("res.data?.data",res.data?.data)
       alert("Login successful ✅");
       navigate("/"); // redirect to home after login
     } catch (err) {

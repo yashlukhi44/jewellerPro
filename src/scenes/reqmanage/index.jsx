@@ -23,13 +23,14 @@ const RequestManagement = () => {
   const [filter, setFilter] = useState("pending");
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
+  const accountId = localStorage.getItem("accountId");
 
   // ✅ Fetch Requests
   const fetchRequests = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${baseUrl}/api/trader/requests?status=${filter}&type=relogin&accountId=68ba3dae284ca3c359e5420b`
+        `${baseUrl}/api/trader/requests?status=${filter}&type=relogin&accountId=${accountId}`
       );
       setRequests(res.data?.data || []);
     } catch (err) {

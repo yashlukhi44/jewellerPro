@@ -125,13 +125,13 @@ const Product = () => {
           color="success"
           startIcon={<Add />}
           onClick={handleAdd}
-          sx={{
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: 600,
-            px: 3,
-            py: 1.5,
-          }}
+          // sx={{
+          //   borderRadius: 2,
+          //   textTransform: "none",
+          //   fontWeight: 600,
+          //   px: 3,
+          //   py: 1.5,
+          // }}
         >
           Add Product
         </Button>
