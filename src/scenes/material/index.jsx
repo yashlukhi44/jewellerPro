@@ -142,18 +142,6 @@ const Material = () => {
   const columns = [
     { field: "name", headerName: "Material Name", flex: 1 },
     {
-      field: "createdAt",
-      headerName: "Created At",
-      flex: 1,
-      valueFormatter: (params) => formatDate(params.value),
-    },
-    {
-      field: "updatedAt",
-      headerName: "Updated At",
-      flex: 1,
-      valueFormatter: (params) => formatDate(params.value),
-    },
-    {
       field: "actions",
       headerName: "Actions",
       flex: 1,

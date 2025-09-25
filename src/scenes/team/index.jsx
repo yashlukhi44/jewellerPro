@@ -153,25 +153,6 @@ const Team = () => {
         </div>
       ),
     },
-    {
-      field: "isAdmin",
-      headerName: "Admin",
-      flex: 0.5,
-      minWidth: 100,
-      align: "center",
-      renderCell: ({ value }) => (
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            fontWeight: "bold",
-            color: value ? "#4caf50" : "#f44336", // green for yes, red for no
-          }}
-        >
-          {value ? "Yes" : "No"}
-        </div>
-      ),
-    },
   ];
 
   return (

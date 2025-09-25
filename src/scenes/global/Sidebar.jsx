@@ -230,13 +230,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Support"
               to="/support"
               icon={<HelpOutlineOutlinedIcon   />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Item
               title="Analytics"
               to="/analytics"

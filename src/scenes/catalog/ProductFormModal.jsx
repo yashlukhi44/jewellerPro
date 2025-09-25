@@ -8,6 +8,10 @@ import {
   Drawer,
   useTheme,
   Paper,
+  Select,
+  InputLabel,
+  FormControl,
+  Chip,
 } from "@mui/material";
 import axios from "axios";
 import ImagePicker from "../../components/ImagePicker";
@@ -33,6 +37,7 @@ const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) =
     price: "",
     discountPrice: "",
   });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   // Fetch dropdowns
@@ -77,6 +82,7 @@ const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) =
         netWeight: editData.netWeight || "",
         grossWeight: editData.grossWeight || "",
         imageUrls: editData.imageUrls || [],
+        availableColors: editData.availableColors || [],
       });
       if (editData.categoryId) fetchSubCategories(editData.categoryId);
     } else {
@@ -91,9 +97,11 @@ const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) =
         netWeight: "",
         grossWeight: "",
         imageUrls: [],
+        availableColors: [],
       });
       setSubCategories([]);
     }
+    setErrors({});
   }, [editData, open]);
 
   const handleChange = (e) => {
@@ -114,6 +122,16 @@ const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) =
     }
   };
 
+  const handleColorChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setFormData((prev) => ({
+      ...prev,
+      availableColors: typeof value === "string" ? value.split(",") : value,
+    }));
+  };
+
   const handleRemoveImage = (idx) => {
     setFormData((prev) => ({
       ...prev,
@@ -121,14 +139,39 @@ const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) =
     }));
   };
 
+  // Validation
+  const validateForm = () => {
+    let tempErrors = {};
+
+    if (!formData.materialId) tempErrors.materialId = "Material is required";
+    if (!formData.categoryId) tempErrors.categoryId = "Category is required";
+    if (!formData.subCategoryId) tempErrors.subCategoryId = "SubCategory is required";
+    if (!formData.name.trim()) tempErrors.name = "Product name is required";
+    if (!formData.description.trim()) tempErrors.description = "Description is required";
+    if (!formData.netWeight) tempErrors.netWeight = "Net weight is required";
+    if (!formData.grossWeight) tempErrors.grossWeight = "Gross weight is required";
+    if (!formData.price) tempErrors.price = "Price is required";
+    if (!formData.discountPrice) tempErrors.discountPrice = "Discount price is required";
+    if (formData.availableColors.length === 0) tempErrors.availableColors = "Select at least one color";
+    if (formData.imageUrls.length === 0) tempErrors.imageUrls = "At least one product image is required";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     try {
       setLoading(true);
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "imageUrls") {
           value.forEach((file) => formDataToSend.append("images", file));
+        } else if (key === "availableColors") {
+          value.forEach((color) => formDataToSend.append("availableColors", color));
         } else {
           formDataToSend.append(key, value);
         }
@@ -169,382 +212,352 @@ const ProductFormDrawer = ({ open, onClose, onSave, editData, fetchProducts }) =
   };
 
   return (
-      <Drawer anchor="right" open={open} onClose={onClose}>
-        <Paper
-          elevation={6}
+    <Drawer anchor="right" open={open} onClose={onClose}>
+      <Paper
+        elevation={6}
+        sx={{
+          width: 880,
+          display: "flex",
+          bgcolor: theme.palette.background.default,
+        }}
+      >
+        {/* Form Side */}
+        <Box
+          component="form"
+          onSubmit={handleSave}
           sx={{
-            width: 880,
+            flex: 1.6,
             display: "flex",
-            bgcolor: theme.palette.background.default,
+            flexDirection: "column",
+            backgroundColor: "#141b2d",
+            borderRight: `1px solid ${theme.palette.divider}`,
+            minWidth: 0,
           }}
         >
-          {/* Form Side */}
+          {/* Header */}
           <Box
-            component="form"
-            onSubmit={handleSave}
             sx={{
-              flex: 1.6,
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "#141b2d",
-              borderRight: `1px solid ${theme.palette.divider}`,
-              minWidth: 0,
+              bgcolor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
+              px: 3,
+              py: 2,
+              mb: 2,
+              borderBottom: `1px solid ${theme.palette.divider}`,
             }}
           >
-            {/* Header */}
-            <Box
-              sx={{
-                bgcolor: theme.palette.primary.main,
-                color: theme.palette.primary.contrastText,
-                px: 3,
-                py: 2,
-                mb: 2,
-                borderBottom: `1px solid ${theme.palette.divider}`,
-              }}
-            >
-              <Typography variant="h6" fontWeight={700}>
-                {editData ? "Edit Product" : "Add Product"}
-              </Typography>
-            </Box>
-
-            {/* Form Fields */}
-            <Box
-              sx={{
-                px: 3,
-                py: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-              }}
-            >
-              {/** Material Select **/}
-              <TextField
-                select
-                label="Material"
-                name="materialId"
-                value={formData.materialId}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              >
-                {materials.map((m) => (
-                  <MenuItem key={m._id} value={m._id}>
-                    {m.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              {/** Category Select **/}
-              <TextField
-                select
-                label="Category"
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              >
-                {categories.map((c) => (
-                  <MenuItem key={c._id} value={c._id}>
-                    {c.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              {/** SubCategory Select **/}
-              <TextField
-                select
-                label="SubCategory"
-                name="subCategoryId"
-                value={formData.subCategoryId}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-                disabled={!formData.categoryId}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              >
-                {subCategories.map((s) => (
-                  <MenuItem key={s._id} value={s._id}>
-                    {s.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              {/** Text Fields **/}
-              <TextField
-                label="Product Name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              />
-              <TextField
-                label="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                fullWidth
-                multiline
-                minRows={3}
-                size="medium"
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              />
-              <TextField
-                label="Net Weight"
-                name="netWeight"
-                value={formData.netWeight}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              />
-              <TextField
-                label="Gross Weight"
-                name="grossWeight"
-                value={formData.grossWeight}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#fff", // ✅ input text color white
-                    "& fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)", // subtle white border
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#fff",
-                      borderWidth: "2px",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255,255,255,0.7)", // ✅ label color white (slightly dimmed)
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#fff", // ✅ label stays white when focused
-                  },
-                }}
-              />
-              <TextField
-                label="Price"
-                name="price"
-                type="number"
-                value={formData.price}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-              />
-
-              <TextField
-                label="Discount Price"
-                name="discountPrice"
-                type="number"
-                value={formData.discountPrice}
-                onChange={handleChange}
-                fullWidth
-                size="medium"
-                variant="outlined"
-              />
-            </Box>
-
-            {/* Actions */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 2,
-                px: 3,
-                py: 2,
-                borderTop: `1px solid ${theme.palette.divider}`,
-                bgcolor: theme.palette.background.default,
-              }}
-            >
-              <Button
-                onClick={onClose}
-                variant="outlined"
-                sx={{
-                  color: theme.palette.text.primary,
-                  borderColor: theme.palette.divider,
-                  "&:hover": { bgcolor: theme.palette.action.hover },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  bgcolor: theme.palette.success.main,
-                  color: theme.palette.success.contrastText,
-                  "&:hover": { bgcolor: theme.palette.success.dark },
-                }}
-                disabled={loading}
-              >
-                {editData ? "Update" : "Save"}
-              </Button>
-            </Box>
+            <Typography variant="h6" fontWeight={700}>
+              {editData ? "Edit Product" : "Add Product"}
+            </Typography>
           </Box>
 
-          {/* Image Picker Side */}
+          {/* Form Fields */}
           <Box
             sx={{
-              flex: 1,
+              px: 3,
+              py: 2,
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              py: 4,
-              px: 2,
-              minWidth: 240,
+              gap: 2,
+            }}
+          >
+            {/* Material */}
+            <TextField
+              select
+              label="Material"
+              name="materialId"
+              value={formData.materialId}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.materialId}
+              helperText={errors.materialId}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            >
+              {materials.map((m) => (
+                <MenuItem key={m._id} value={m._id}>
+                  {m.name}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {/* Category */}
+            <TextField
+              select
+              label="Category"
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.categoryId}
+              helperText={errors.categoryId}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            >
+              {categories.map((c) => (
+                <MenuItem key={c._id} value={c._id}>
+                  {c.name}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {/* SubCategory */}
+            <TextField
+              select
+              label="SubCategory"
+              name="subCategoryId"
+              value={formData.subCategoryId}
+              onChange={handleChange}
+              fullWidth
+              disabled={!formData.categoryId}
+              error={!!errors.subCategoryId}
+              helperText={errors.subCategoryId}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            >
+              {subCategories.map((s) => (
+                <MenuItem key={s._id} value={s._id}>
+                  {s.name}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {/* Name */}
+            <TextField
+              label="Product Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.name}
+              helperText={errors.name}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            />
+
+            {/* Description */}
+            <TextField
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              fullWidth
+              multiline
+              minRows={3}
+              error={!!errors.description}
+              helperText={errors.description}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            />
+
+            {/* Net Weight */}
+            <TextField
+              label="Net Weight"
+              name="netWeight"
+              value={formData.netWeight}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.netWeight}
+              helperText={errors.netWeight}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            />
+
+            {/* Gross Weight */}
+            <TextField
+              label="Gross Weight"
+              name="grossWeight"
+              value={formData.grossWeight}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.grossWeight}
+              helperText={errors.grossWeight}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            />
+
+            {/* Price */}
+            <TextField
+              label="Price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.price}
+              helperText={errors.price}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            />
+
+            {/* Discount Price */}
+            <TextField
+              label="Discount Price"
+              name="discountPrice"
+              type="number"
+              value={formData.discountPrice}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.discountPrice}
+              helperText={errors.discountPrice}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "#fff",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                  "&:hover fieldset": { borderColor: "#fff" },
+                  "&.Mui-focused fieldset": { borderColor: "#fff", borderWidth: "2px" },
+                },
+                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#fff" },
+              }}
+            />
+
+            {/* Available Colors */}
+            <FormControl fullWidth error={!!errors.availableColors}>
+              <InputLabel sx={{ color: "#fff" }}>Available Colors</InputLabel>
+              <Select
+                multiple
+                name="availableColors"
+                value={formData.availableColors}
+                onChange={handleColorChange}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                sx={{
+                  color: "#fff",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255,255,255,0.3)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#fff" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#fff",
+                    borderWidth: "2px",
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { bgcolor: "#1e1e2f", color: "#fff" },
+                  },
+                }}
+              >
+                <MenuItem value="rose_gold">Rose Gold</MenuItem>
+                <MenuItem value="yellow_gold">Yellow Gold</MenuItem>
+              </Select>
+              {errors.availableColors && (
+                <Typography variant="caption" color="error">
+                  {errors.availableColors}
+                </Typography>
+              )}
+            </FormControl>
+          </Box>
+
+          {/* Actions */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 2,
+              px: 3,
+              py: 2,
+              borderTop: `1px solid ${theme.palette.divider}`,
               bgcolor: theme.palette.background.default,
             }}
           >
-            <Typography variant="subtitle1" fontWeight={600} mb={2} color="white">
-              Product Images
-            </Typography>
-            <ImagePicker
-              imageUrls={formData.imageUrls}
-              onChange={handleChange}
-              onRemove={handleRemoveImage}
-              multiple
-            />
+            <Button onClick={onClose} variant="outlined">
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ bgcolor: theme.palette.success.main, color: theme.palette.success.contrastText }}
+              disabled={loading}
+            >
+              {editData ? "Update" : "Save"}
+            </Button>
           </Box>
-        </Paper>
-      </Drawer>
+        </Box>
+
+        {/* Image Upload */}
+        <Box sx={{ flex: 1, p: 2, bgcolor: "#0f1626" }}>
+          <Typography variant="subtitle1" gutterBottom color="#fff">
+            Product Images
+          </Typography>
+          <ImagePicker images={formData.imageUrls} onChange={handleChange} onRemove={handleRemoveImage} />
+          {errors.imageUrls && (
+            <Typography variant="caption" color="error">
+              {errors.imageUrls}
+            </Typography>
+          )}
+        </Box>
+      </Paper>
+    </Drawer>
   );
 };
 

@@ -110,14 +110,14 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route
+                {/* <Route
                   path="/support"
                   element={
                     <PrivateRoute>
                       <Support />
                     </PrivateRoute>
                   }
-                />
+                /> */}
                 <Route
                   path="/analytics"
                   element={
